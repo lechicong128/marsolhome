@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/accounts/app" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/accounts/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/accounts/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/accounts/tests" isTestSource="true" packagePrefix="Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/accounts/tests/Feature" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/accounts/tests/Unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/m4u-admin/app" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/m4u-admin/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/m4u-admin/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/m4u-admin/tests" isTestSource="true" packagePrefix="Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/m4u-admin/tests/Feature" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/m4u-admin/tests/Unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/services/app" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/services/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/services/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/services/tests" isTestSource="true" packagePrefix="Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/services/tests/Feature" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/services/tests/Unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/admin/tests/Feature" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/admin/tests/Unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/admin/app" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/admin/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
+      <sourceFolder url="file://$MODULE_DIR$/admin/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
+      <sourceFolder url="file://$MODULE_DIR$/admin/tests" isTestSource="true" packagePrefix="Tests\" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/aws/aws-crt-php" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/aws/aws-sdk-php" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/aws/aws-sdk-php-laravel" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/barryvdh/laravel-debugbar" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/barryvdh/laravel-dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/brick/math" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/carbonphp/carbon-doctrine-types" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/dflydev/dot-access-data" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/doctrine/inflector" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/doctrine/lexer" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/dompdf/dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/dragonmantank/cron-expression" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/egulias/email-validator" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/fakerphp/faker" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/filp/whoops" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/firebase/php-jwt" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/fruitcake/php-cors" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/genealabs/laravel-overridable-model" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/genealabs/laravel-sign-in-with-apple" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/genealabs/laravel-socialiter" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/google/apiclient" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/google/apiclient-services" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/google/auth" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/graham-campbell/result-type" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/guzzlehttp/guzzle" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/guzzlehttp/promises" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/guzzlehttp/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/guzzlehttp/uri-template" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/hamcrest/hamcrest-php" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/helmesvs/laravel-notify" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/intervention/image" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/framework" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/pint" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/prompts" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/sail" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/sanctum" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/serializable-closure" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/socialite" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/laravel/tinker" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/commonmark" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/config" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/flysystem" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/flysystem-aws-s3-v3" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/flysystem-local" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/mime-type-detection" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/league/oauth1-client" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/maestroerror/heif-converter" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/maestroerror/php-heic-to-jpg" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/masterminds/html5" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/mavinoo/laravel-batch" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/mockery/mockery" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/monolog/monolog" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/mtdowling/jmespath.php" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/myclabs/deep-copy" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/nesbot/carbon" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/nette/schema" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/nette/utils" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/nikic/php-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/nunomaduro/collision" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/nunomaduro/termwind" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/paragonie/constant_time_encoding" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/paragonie/sodium_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phar-io/manifest" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phar-io/version" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpoption/phpoption" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpseclib/phpseclib" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpunit/php-code-coverage" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpunit/php-file-iterator" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpunit/php-invoker" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpunit/php-text-template" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpunit/php-timer" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpunit/phpunit" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/clock" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/container" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/http-factory" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/log" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psr/simple-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/psy/psysh" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/pusher/pusher-php-server" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/ralouphie/getallheaders" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/ramsey/collection" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/ramsey/uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sabberworm/php-css-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/cli-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/code-unit" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/code-unit-reverse-lookup" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/comparator" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/complexity" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/diff" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/environment" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/exporter" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/global-state" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/lines-of-code" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/object-enumerator" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/object-reflector" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/recursion-context" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/type" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/version" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/backtrace" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/flare-client-php" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/ignition" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/laravel-activitylog" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/laravel-ignition" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/laravel-package-tools" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/console" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/css-selector" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/deprecation-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/error-handler" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/event-dispatcher-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/finder" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/http-foundation" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/http-kernel" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/mailer" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/mime" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-ctype" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-intl-grapheme" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-intl-idn" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-intl-normalizer" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-mbstring" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-php80" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-php83" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/polyfill-uuid" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/process" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/routing" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/service-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/string" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/thanks" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/translation" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/translation-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/uid" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/var-dumper" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/symfony/yaml" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/theseer/tokenizer" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/tijsverkoyen/css-to-inline-styles" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/unisharp/laravel-filemanager" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/vlucas/phpdotenv" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/voku/portable-ascii" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/yajra/laravel-datatables-oracle" />
+      <excludeFolder url="file://$MODULE_DIR$/services/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/services/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/php-debugbar/php-debugbar" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/spatie/error-solutions" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/doctrine/instantiator" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phenx/php-font-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phenx/php-svg-lib" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/sebastian/resource-operations" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/ezyang/htmlpurifier" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/maatwebsite/excel" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/maennchen/zipstream-php" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/markbaker/complex" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/markbaker/matrix" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor/phpoffice/phpspreadsheet" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/public/storage" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app/public/clients" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app/public/feedback" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app/public/promotion" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app/public/star_like" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/26" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/2b" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/33" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/81" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/8c" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/8d" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/92" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/98" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/ba" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework/cache/data/c0" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/vendor" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/public/storage" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/banner" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/blog" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/category_card" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/category_products" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/helpcentre" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/homepage" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/image_video_size" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/introduction_app" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/lang_app" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/language" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/module_noti" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/payment_mode" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/photos" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/products" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/products_filter" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/review" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/review_other" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/script" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/setting_customer_class" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/transfer_address" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/users" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/video_size" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/web" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/0c" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/1f" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/3a" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/3d" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/3e" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/3f" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/45" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/63" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/67" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/6d" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/8f" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/9b" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/9c" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/9d" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/a3" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/a8" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/b0" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/c3" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/cf" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/d5" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/df" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/e0" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/ec" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/f9" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/data/fe" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/framework/cache/laravel-excel" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/vendor" />
+      <excludeFolder url="file://$MODULE_DIR$/services/public/storage" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/app/public/event_articles" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/app/public/slide_introduce" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/26" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/2b" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/33" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/81" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/8c" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/8d" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/92" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/98" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/ba" />
+      <excludeFolder url="file://$MODULE_DIR$/services/storage/framework/cache/data/c0" />
+      <excludeFolder url="file://$MODULE_DIR$/services/vendor" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/note_affiliate" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app/public/setting_customer_class" />
+      <excludeFolder url="file://$MODULE_DIR$/m4u-admin/storage/app/public/note_haru_wallet" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app/public/rank_community" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/app" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/framework" />
+      <excludeFolder url="file://$MODULE_DIR$/accounts/storage/keys" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

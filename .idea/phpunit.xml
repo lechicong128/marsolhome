@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PHPUnit">
+    <option name="directories">
+      <list>
+        <option value="$PROJECT_DIR$/m4u-admin/tests/Unit" />
+        <option value="$PROJECT_DIR$/m4u-admin/tests/Feature" />
+        <option value="$PROJECT_DIR$/accounts/tests/Unit" />
+        <option value="$PROJECT_DIR$/accounts/tests/Feature" />
+        <option value="$PROJECT_DIR$/services/tests/Unit" />
+        <option value="$PROJECT_DIR$/services/tests/Feature" />
+        <option value="$PROJECT_DIR$/admin/tests/Unit" />
+        <option value="$PROJECT_DIR$/admin/tests/Feature" />
+      </list>
+    </option>
+  </component>
+</project>
