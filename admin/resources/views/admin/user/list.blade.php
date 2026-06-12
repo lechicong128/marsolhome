@@ -435,12 +435,12 @@
         <table id="table_user" class="table">
             <thead>
                 <tr>
-                    <th style="text-align: center;">Người dùng</th>
-                    <th style="text-align: center;">SĐT</th>
-                    <th style="text-align: center;">Vai trò</th>
-                    <th style="text-align: center;">Trạng thái</th>
-                    <th style="text-align: center;">Ngày tạo</th>
-                    <th style="text-align: center;">Thao tác</th>
+                    <th>Người dùng</th>
+                    <th>SĐT</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th class="text-right">Thao tác</th>
                 </tr>
             </thead>
             <tbody>

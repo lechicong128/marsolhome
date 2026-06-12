@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
-use App\Models\CategoryCard;
+use App\Models\TypeProperty;
 use App\Models\Clients;
 use App\Models\Driver;
 use App\Models\RequestWithdrawMoney;
@@ -306,5 +306,26 @@ class CategoryController extends Controller
             'data' => $dtData,
             'message' => $data['message']
         ], 200);
+    }
+
+     public function searchPropertyType(){
+        $search = $this->request->input('term');
+        $dtData = TypeProperty::where(function ($query) use ($search) {
+            $query->where('active', 1);
+            if (!empty($search)) {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+        })->limit(50)->get();
+        $results = [];
+        foreach ($dtData as $key => $value) {
+            $results[] = [
+                'id' => $value->id,
+                'text' => $value->name,
+            ];
+        }
+        $data = [
+            'items' => $results
+        ];
+        return response()->json($data);
     }
 }

@@ -26,6 +26,7 @@ class BannerController extends Controller
     {
         $filter_status_search = $this->request->input('status_search', 0);
         $dtBanner = Banner::with(['transalations.language_detail'])
+            ->orderBy('order_by', 'DESC')
             ->where(function($q) use ($filter_status_search) {
             if (is_numeric($filter_status_search)) {
                 $q->where('tbl_banner.is_app', '=', $filter_status_search);
@@ -33,81 +34,42 @@ class BannerController extends Controller
         });
         return Datatables::of($dtBanner)
             ->addColumn('options', function ($banner) {
-                $edit = "<a class='dt-modal' href='admin/banner/detail/$banner->id'><i class='fa fa-pencil'></i> " . lang('edit_banner') . "</a>";
-                $delete = '<a type="button" class="po-delete" data-container="body" data-html="true" data-toggle="popover" data-placement="left" data-content="
-                <button href=\'admin/banner/delete/' . $banner->id . '\' class=\'btn btn-danger dt-delete\'>' . lang('dt_delete') . '</button>
-                <button class=\'btn btn-default po-close\'>' . lang('dt_close') . '</button>
-            "><i class="fa fa-remove width-icon-actions"></i> ' . lang('delete_banner') . '</a>';
-                $options = ' <div class="dropdown text-center">
-                            <button class="btn btn-default dropdown-toggle nav-link" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                             Tác vụ
-                            <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu pull-right" role="menu" aria-labelledby="dropdownMenu1">
-                                <li style="cursor: pointer">' . $edit . '</li>
-                                <li style="cursor: pointer">' . $delete . '</li>
-                            </ul>
-                        </div>';
-
-                return $options;
+                $edit = "<a class='btn btn-xs btn-outline-primary btn-icon dt-modal' href='admin/banner/detail/$banner->id' title='" . lang('edit_banner') . "' style='display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; border: 1px solid #3a94ef; color: #3a94ef; background: transparent; transition: all 0.2s; margin-right: 6px;' onmouseover=\"this.style.background='#3a94ef'; this.style.color='white'\" onmouseout=\"this.style.background='transparent'; this.style.color='#3a94ef'\"><i class='fa fa-pencil'></i></a>";
+                
+                $delete = '<a type="button" class="btn btn-xs btn-outline-danger btn-icon po-delete" data-container="body" data-html="true" data-toggle="popover" data-placement="left" data-content="
+                    <div style=\'padding: 8px; text-align: center; min-width: 150px;\'>
+                        <p style=\'margin-bottom: 10px; font-weight: 600; color: #374151; font-size: 13px;\'>Xác nhận xóa?</p>
+                        <div style=\'display: flex; gap: 8px; justify-content: center;\'>
+                            <button href=\'admin/banner/delete/' . $banner->id . '\' class=\'btn btn-danger btn-sm dt-delete\' style=\'border-radius: 4px; padding: 4px 10px; font-size: 11px; font-weight: 600;\'>' . lang('dt_delete') . '</button>
+                            <button class=\'btn btn-default btn-sm po-close\' style=\'border-radius: 4px; padding: 4px 10px; font-size: 11px; font-weight: 600;\'>' . lang('dt_close') . '</button>
+                        </div>
+                    </div>" style=\'display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 6px; border: 1px solid #ef4444; color: #ef4444; background: transparent; transition: all 0.2s; cursor: pointer;\' onmouseover="this.style.background=\'#ef4444\'; this.style.color=\'white\'" onmouseout="this.style.background=\'transparent\'; this.style.color=\'#ef4444\'"><i class="fa fa-trash"></i></a>';
+                
+                return '<div style="display: flex; justify-content: center; align-items: center;">' . $edit . $delete . '</div>';
             })
             ->editColumn('active', function ($data) {
                 $checked = $data->active == 1 ? 'checked' : '';
-                $str = '<div><input type="checkbox" '.$checked.' name="active" class="active dt-active"  data-plugin="switchery" data-color="#285b23" data-href="admin/banner/changeStatus/'.$data->id.'" data-status="'.$data->active.'"></div>';
-                return $str;
-            })
-
-            ->addColumn('title', function ($data) {
-                $str = '';
-                foreach($data->transalations as $key => $value) {
-                    if(!empty($value['title'])) {
-                        $imgLogo = $this->baseUrl  .'/'. $value['language_detail']['image'];
-                        $str.= '<div class="m-b-5"><img style="width:20px;height:20px;" src="'.$imgLogo.'"/> <span class="inline-flex">'.$value['title'].'</span></div>';
-                    }
-                }
-                return $str;
-            })
-            ->addColumn('content', function ($data) {
-                $str = '';
-                foreach($data->transalations as $key => $value) {
-                    if(!empty($value['content'])) {
-                        $imgLogo = $this->baseUrl  .'/'. $value['language_detail']['image'];
-                        $str.= '<div class="m-b-5"><img style="width:20px;height:20px;" src="'.$imgLogo.'"/> <span class="inline-flex">'.$value['content'].'</span></div>';
-                    }
-                }
+                $str = '<div class="text-center" style="display: flex; justify-content: center; align-items: center;"><input type="checkbox" '.$checked.' name="active" class="active dt-active"  data-plugin="switchery" data-color="#285b23" data-href="admin/banner/changeStatus/'.$data->id.'" data-status="'.$data->active.'"></div>';
                 return $str;
             })
             ->editColumn('image', function ($data) {
-                $str = '';
-
-                $str.= '<div class="m-b-5">';
-                $str.= '<table class="table">';
-                $str.= '<tbody>';
-                    foreach($data->transalations as $key => $value) {
-                        $str.= '<tr>';
-                        $imgLogo = $this->baseUrl  .'/'. $value['language_detail']['image'];
-                        $str.= '<td><img style="width:20px;height:20px;" src="'.$imgLogo.'"/> </td>';
-                        $str.= '<td>';
-                        $imgBanner = $this->baseUrl  .'/'. $value['image'];
-                        $str.= '<a href="'.$imgBanner.'" data-lightbox="customer-profile_'.$data->id.'" class="display-block mbot5">
-                                    <img src="'.$imgBanner.'" alt="image" class="img-responsive " style="width: 50px;height: 50px">
-                                </a>';
-                        $str.= '</td>';
-                        $str.= '</tr>';
-                    }
-                $str.= '</tbody>';
-                $str.= '</table>';
-                return $str;
-
-//                $dtImage = !empty($job_category->image) ? asset('storage/' . $job_category->image) : null;
-//                return loadImage($dtImage);
+                $viTranslation = $data->transalations->where('language', 'vi')->first();
+                if ($viTranslation && !empty($viTranslation->image)) {
+                    $imgBanner = $this->baseUrl  .'/'. $viTranslation->image;
+                    return '<div class="text-center">
+                                <a href="'.$imgBanner.'" data-lightbox="customer-profile_'.$data->id.'" class="display-block" style="display: inline-block;">
+                                    <img src="'.$imgBanner.'" alt="image" class="img-responsive img-thumbnail" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);">
+                                </a>
+                            </div>';
+                }
+                return '<div class="text-center text-muted">-</div>';
             })
             ->editColumn('image_website', function ($data) {
                 $dtImage = !empty($data->image_website) ? asset('storage/' . $data->image_website) : null;
                 return loadImage($dtImage);
             })
             ->addIndexColumn()
-            ->rawColumns(['options', 'active', 'image','image_website', 'title','content'])
+            ->rawColumns(['options', 'active', 'image'])
             ->make(true);
     }
 
@@ -138,10 +100,10 @@ class BannerController extends Controller
                 $data_translations = [];
                 foreach ($translations as $translation) {
                     $data_translations[$translation->language] = [
-                        'title' => $translation->title,
-                        'content' => $translation->content,
-                        'image' => $translation->image,
-                        'image_website' => $translation->image_website,
+                        'title' => $translation->title ?? '',
+                        'content' => $translation->content ?? '',
+                        'image' => $translation->image ?? '',
+                        'image_website' => $translation->image_website ?? '',
                     ];
                 }
                 $banner->translations = $data_translations;
@@ -164,39 +126,39 @@ class BannerController extends Controller
 
         if (!empty($id)) {
             $banner = Banner::find($id);
-            $validator = Validator::make($this->request->all(),
-                [
-                    'name' => 'required',
-                ],
-                [
-                    'content.required' => 'Bạn chưa nhập tên',
-                ]
-            );
+            // $validator = Validator::make($this->request->all(),
+            //     [
+            //         'name' => 'required',
+            //     ],
+            //     [
+            //         'content.required' => 'Bạn chưa nhập tên',
+            //     ]
+            // );
         } else {
-            $validator = Validator::make($this->request->all(),
-                [
-                    'name' => 'required',
-                ],
-                [
-                    'content.required' => 'Bạn chưa nhập tên',
-                ]
-            );
+            // $validator = Validator::make($this->request->all(),
+            //     [
+            //         'name' => 'required',
+            //     ],
+            //     [
+            //         'content.required' => 'Bạn chưa nhập tên',
+            //     ]
+            // );
 
             $banner = new Banner();
         }
 
-        if ($validator->fails()) {
-            $data['result'] = 0;
-            $data['message'] = $validator->errors()->all();
-            echo json_encode($data);
-            die();
-        }
+        // if ($validator->fails()) {
+        //     $data['result'] = 0;
+        //     $data['message'] = $validator->errors()->all();
+        //     echo json_encode($data);
+        //     die();
+        // }
 
         DB::beginTransaction();
         try {
-            $title = $this->request->input('title');
+            $title = $this->request->input('title') ?? [];
 
-            $banner->name = $this->request->input('name');
+            $banner->name = $this->request->input('name') ?? [];
             $banner->is_background = $this->request->input('is_background') ?? 0;
             $banner->region_id = config('constant.DEFAULT_REGION');
             $banner->is_app = $this->request->input('is_app') ?? 0; // = 1 là banner app, =0 là banner website
@@ -245,6 +207,10 @@ class BannerController extends Controller
                             ->update([
                                 'image' => $path,
                             ]);
+                        if ($language === 'vi') {
+                            $banner->image = $path;
+                            $banner->save();
+                        }
                     }
                 }
                 if ($this->request->hasFile('images_website')) {
@@ -298,5 +264,25 @@ class BannerController extends Controller
             $data['message'] = $exception;
             return response()->json($data);
         }
+    }
+
+    public function order_by()
+    {
+        $list_order_by = $this->request->input('list_order_by');
+        if (!empty($list_order_by)) {
+            foreach ($list_order_by as $id => $order_by) {
+                $banner = Banner::find($id);
+                if (!empty($banner)) {
+                    $banner->order_by = $order_by;
+                    $banner->save();
+                }
+            }
+            $data['result'] = true;
+            $data['message'] = lang('c_order_by_true');
+            return response()->json($data);
+        }
+        $data['result'] = false;
+        $data['message'] = lang('c_order_by_false');
+        return response()->json($data);
     }
 }

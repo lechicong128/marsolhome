@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Cookie;
+use App\Models\Home;
+use App\Models\Blog;
+use App\Models\ApplicationComment;
+use App\Services\AccountService;
 
 class AdminController extends Controller
 {
@@ -21,9 +25,35 @@ class AdminController extends Controller
         DB::enableQueryLog();
     }
 
-    public function index()
+    public function index(AccountService $accountService)
     {
-        return view('admin.index');
+        $totalMembers = 0;
+        try {
+            $response = $accountService->countAll($this->request);
+            $data = $response->getData(true);
+            $totalMembers = $data['total'] ?? 0;
+        } catch (\Exception $e) {
+            // Silent catch to avoid breaking the dashboard if service is down
+        }
+
+        $totalHomes = Home::count();
+        $newHomesToday = Home::whereDate('created_at', Carbon::today())->count();
+
+        $totalPosts = Blog::count();
+        $newPostsToday = Blog::whereDate('created_at', Carbon::today())->count();
+
+        $totalComments = ApplicationComment::count();
+        $newCommentsToday = ApplicationComment::whereDate('comment_date', Carbon::today())->count();
+
+        return view('admin.index', compact(
+            'totalMembers',
+            'totalHomes',
+            'newHomesToday',
+            'totalPosts',
+            'newPostsToday',
+            'totalComments',
+            'newCommentsToday'
+        ));
     }
 
     public function get_login()

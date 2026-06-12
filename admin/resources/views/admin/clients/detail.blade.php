@@ -80,8 +80,8 @@
                                             <select class="form-control" name="type_client" id="type_client" required style="width: 100%;height: 35px">
                                                 <option value=""></option>
                                                 <option value="0" {{!empty($client) && $client['type_client'] == 0 ? 'selected' : ''}}>{{lang('Người xem')}}</option>
-                                                <option value="1" {{!empty($client) && $client['type_client'] == 1 ? 'selected' : ''}}>{{lang('Môi giới')}}</option>
-                                                <option value="2" {{!empty($client) && $client['type_client'] == 2 ? 'selected' : ''}}>{{lang('Chính chủ')}}</option>
+                                                <option value="1" {{!empty($client) && $client['type_client'] == 1 ? 'selected' : ''}}>{{lang('Nhân viên sale')}}</option>
+                                                <option value="2" {{!empty($client) && $client['type_client'] == 2 ? 'selected' : ''}}>{{lang('Admin')}}</option>
                                             </select>
                                         </div>
 

@@ -59,6 +59,20 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="price_max">Giá tối đã (bộ lọc)</label>
+            <input type="text" name="price_max" id="price_max" onkeyup="formatNumBerKeyChange(this)" value="{{formatMoney(get_option('price_max'))}}" class="form-control">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label for="area_max">Diện tích tối đã (bộ lọc)</label>
+            <input type="text" name="area_max" id="area_max" onkeyup="formatNumBerKeyChange(this)" value="{{formatMoney(get_option('area_max'))}}" class="form-control">
+        </div>
+    </div>
+</div>
 <div class="form-group">
     <label for="length_table">{{lang('c_length_table')}}</label>
     <input type="text" name="length_table" id="length_table"  value="{{get_option('length_table')}}" class="form-control">

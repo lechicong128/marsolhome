@@ -2,33 +2,14 @@
 
 namespace App\Http\Controllers\Api_app;
 
-use App\Http\Resources\ListBank as ListBankResource;
-use App\Http\Resources\CompanyCarResource;
-use App\Http\Resources\TypeCarResource;
-//use App\Models\CategoryCard;
-//use App\Models\CategoryErrorCar;
-//use App\Models\CategoryLocation;
-//use App\Models\CategoryReport;
-//use App\Models\CategoryReportDriver;
-//use App\Models\CompanyCar;
-//use App\Models\ContentReview;
-//use App\Models\ContractTemplate;
-//use App\Models\GuidePayment;
-//use App\Models\ListBank;
-//use App\Models\ModelCar;
-//use App\Models\NoteCancel;
-//use App\Models\OtherAmenitiesCar;
-//use App\Models\PaymentMode;
-//use App\Models\Province;
-//use App\Models\SampleMessage;
-//use App\Models\SurchargeCar;
-//use App\Models\TypeCar;
-//use App\Models\Car;
+use App\Models\TypeProperty;
 use App\Models\NoteAffiliate;
 use App\Models\NoteHaruWallet;
 use App\Models\NoteCancel;
 use App\Models\PaymentMode;
 use App\Models\Unit;
+use App\Models\Province;
+use App\Models\Utility;
 use App\Traits\UploadFile;
 use Google\Collection;
 use Illuminate\Http\Request;
@@ -103,9 +84,12 @@ class CategoryController extends AuthController
         $search = !empty($this->request->input('search')) ? $this->request->input('search') : null;
         $dtProvince = Province::where(function ($query) use ($search) {
             if (!empty($search)) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where(function($q) use ($search){
+                    $q->where('name', 'like', '%' . $search . '%');
+                    $q->orWhere('full_name', 'like', '%' . $search . '%');
+                });
             }
-        })->orderByRaw('order_by desc')->take($limit)->get();
+        })->orderBy('order_by','desc')->take($limit)->get();
         $data['data'] = $dtProvince;
         return response()->json($data);
     }
@@ -127,14 +111,17 @@ class CategoryController extends AuthController
 
     public function getListWard()
     {
-        $limit = 50;
+        $limit = 100;
         $search = !empty($this->request->input('search')) ? $this->request->input('search') : null;
-        $district_id = !empty($this->request->input('district_id')) ? $this->request->input('district_id') : 0;
-        $dtWard = DB::table('tbl_wards')->where(function ($query) use ($search, $district_id) {
+        $province_id = !empty($this->request->input('province_id')) ? $this->request->input('province_id') : 0;
+        $dtWard = DB::table('tbl_wards_new')->where(function ($query) use ($search, $province_id) {
             if (!empty($search)) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where(function($q) use ($search){
+                    $q->where('name', 'like', '%' . $search . '%');
+                    $q->orWhere('full_name', 'like', '%' . $search . '%');
+                });
             }
-            $query->where('district_id', $district_id);
+            $query->where('province_id', $province_id);
         })->take($limit)->get();
         $data['data'] = $dtWard;
         return response()->json($data);
@@ -594,6 +581,54 @@ class CategoryController extends AuthController
             })
             ->orderByRaw('id desc')->get();
         $data['data'] = $dtUnit;
+        $data['result'] = true;
+        $data['message'] = 'Lấy danh sách thành công';
+        return response()->json($data);
+    }
+
+    public function searchPropertyType(){
+        $search = $this->request->input('term');
+        $dtData = TypeProperty::where(function ($query) use ($search) {
+            $query->where('active', 1);
+            if (!empty($search)) {
+                $query->where('name', 'like', '%' . $search . '%');
+            }
+        })->limit(50)->get();
+        $results = [];
+        foreach ($dtData as $key => $value) {
+            $results[] = [
+                'id' => $value->id,
+                'text' => $value->name,
+                'image' => $value->image ? asset('storage/' . $value->image) : null,
+            ];
+        }
+        $data = [
+            'items' => $results
+        ];
+        return response()->json($data);
+    }
+
+    public function getListUtilitiesFilter() {
+        $utility = Utility::where('show_filter', 1)->get();
+        $utility->map(function ($item) {
+            unset($item->created_at);
+            unset($item->updated_at);
+            unset($item->transaction_type);
+            unset($item->unit);
+            unset($item->show_list);
+            unset($item->show_filter);
+            unset($item->icon);
+            $item->options = $item->options->map(function ($option) {
+                unset($option->created_at);
+                unset($option->updated_at);
+                return [
+                    'id' => $option->id,
+                    'name' => $option->name,
+                ];
+            });
+            return $item;
+        });
+        $data['data'] = $utility;
         $data['result'] = true;
         $data['message'] = 'Lấy danh sách thành công';
         return response()->json($data);

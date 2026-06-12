@@ -35,11 +35,16 @@
 </style>
 <form id="PaymentModeForm" action="admin/payment_mode/submit/{{$id}}" method="post" data-parsley-validate novalidate>
     {{csrf_field()}}
-    <div class="modal-dialog">
+    <div class="modal-overlay">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{$title}}</h4>
+               <h2 class="modal-title">{{ $title }}</h2>
+                <button type="button" class="close" data-dismiss="modal" title="Đóng">
+                    <!-- Sử dụng SVG cho nút Close sắc nét -->
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="row">
@@ -78,12 +83,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
             <div class="modal-footer">
-                <button class="btn btn-default waves-effect waves-light"
-                        type="submit">{{lang('dt_save')}}</button>
-                <button type="button" class="btn btn-primary"
-                        data-dismiss="modal">{{lang('dt_close')}}</button>
+                <button class="btn btn-default" id="saveBtn">Lưu Lại</button>
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy bỏ</button>
             </div>
         </div>
     </div>
@@ -122,7 +124,7 @@
                 .done(function (data) {
                     if (data.result) {
                         oTable.draw();
-                        $('.modal-dialog .close').trigger('click');
+                        $('.modal-overlay .close').trigger('click');
                         alert_float('success',data.message);
                     } else {
                         $(".show_error").html(data.message);

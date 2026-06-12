@@ -68,14 +68,15 @@ class ClientController extends AuthController
             })
             ->editColumn('created_at', function ($client) {
                 $str = _dt($client['created_at']);
-                // $str = !empty($client['created_at']) ? date('d/m/Y', strtotime($client['created_at'])) : '';
-                return $str;
+                return '<div data-order="' . $client['created_at'] . '">'.$str.'</div>';
             })
             ->editColumn('active', function ($client) {
                 $customer_id = $client['id'];
-                $classes = $client['active'] == 1 ? "btn-info" : "btn-danger";
-                $content = $client['active'] == 1 ? lang('c_active') : lang('c_block');
-                $str = "<a class='dt-update text-center btn btn-xs $classes' href='admin/clients/active/$customer_id'>$content</a>";
+                if ($client['active'] == 1) {
+                    $str = "<a class='dt-update status-badge status-active' href='admin/clients/active/$customer_id'><i class='fa fa-check-circle'></i> " . lang('Hoạt động') . "</a>";
+                } else {
+                    $str = "<a class='dt-update status-badge status-locked' href='admin/clients/active/$customer_id'><i class='fa fa-times-circle'></i> " . lang('Khoá') . "</a>";
+                }
                 return $str;
             })
             ->editColumn('code_introduce', function ($client) {
@@ -84,17 +85,26 @@ class ClientController extends AuthController
             ->editColumn('type_client', function ($client) {
                 $classesT = 'btn-default';
                 $contentT = lang('Chưa xác định');
-                if($client['type_client'] == 0){
-                    $classesT = 'btn-default';
-                    $contentT = lang('Người xem');
-                }elseif ($client['type_client'] == 1) {
-                    $classesT = 'btn-info';
-                    $contentT = lang('Môi giới');
-                } elseif($client['type_client'] == 2){
-                    $classesT = 'btn-danger';
-                    $contentT = lang('Chính chủ');
+                // if($client['type_client'] == 0){
+                //     $classesT = 'btn-default';
+                //     $contentT = lang('Người xem');
+                // }elseif ($client['type_client'] == 1) {
+                //     $classesT = 'btn-info';
+                //     $contentT = lang('Nhân viên sale');
+                // } elseif($client['type_client'] == 2){
+                //     $classesT = 'btn-danger';
+                //     $contentT = lang('Admin');
+                // }
+                // $str = "<a class='text-center btn btn-xs $classesT'>$contentT</a>";
+                if ($client['type_client'] == 0) {
+                    $str = "<span class='type-badge type-viewer'><i class='fa fa-eye'></i> " . lang('Người xem') . "</span>";
+                } elseif ($client['type_client'] == 1) {
+                    $str = "<span class='type-badge type-sale'><i class='fa fa-briefcase'></i> " . lang('Nhân viên sale') . "</span>";
+                } elseif ($client['type_client'] == 2) {
+                    $str = "<span class='type-badge type-admin'><i class='fa fa-home'></i> " . lang('Admin') . "</span>";
+                } else {
+                    $str = "<span class='type-badge type-undefined'><i class='fa fa-question-circle'></i> " . lang('Chưa xác định') . "</span>";
                 }
-                $str = "<a class='text-center btn btn-xs $classesT'>$contentT</a>";
                 return $str;
             })
             ->editColumn('avatar', function ($client) {
@@ -166,9 +176,11 @@ class ClientController extends AuthController
             })
             ->editColumn('active', function ($client) {
                 $customer_id = $client['id'];
-                $classes = $client['active'] == 1 ? "btn-info" : "btn-danger";
-                $content = $client['active'] == 1 ? lang('c_active') : lang('c_block');
-                $str = "<a class='dt-update text-center btn btn-xs $classes'>$content</a>";
+                if ($client['active'] == 1) {
+                    $str = "<a class='dt-update status-badge status-active'><i class='fa fa-check-circle'></i> " . lang('Hoạt động') . "</a>";
+                } else {
+                    $str = "<a class='dt-update status-badge status-locked'><i class='fa fa-times-circle'></i> " . lang('Khoá') . "</a>";
+                }
                 return $str;
             })
             ->editColumn('code_introduce_parent', function ($client) {

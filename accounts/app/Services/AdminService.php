@@ -417,4 +417,20 @@ class AdminService
         $response = $response->json();
         return $response;
     }
+
+    public function countHomes($customerIds = [],$admin = 0)
+    {
+        try {
+            $response = Http::post("{$this->baseUrl}/api/home/countHomes", [
+                'customer_ids' => $customerIds,
+                'admin' => $admin
+            ]);
+            return $response->json();
+        } catch (\Exception $e) {
+            return [
+                'result' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

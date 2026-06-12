@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Config;
 
 class CheckLoginApi
 {
@@ -26,7 +27,7 @@ class CheckLoginApi
             return response()->json(['error' => 'Token not provided.'], 401);
         }
         $publicKey = file_get_contents(storage_path('keys/public.pem'));
-        if ($token != 'nglow') {
+        if ($token != Config::get('constant')['token_default']) {
             try {
                 $decoded = JWT::decode($token, new Key($publicKey, 'RS256'));
                 if (!empty($decoded) && !empty($decoded->guard) && $decoded->guard == 'admin') {
@@ -69,7 +70,7 @@ class CheckLoginApi
     public function getDataToken($request) {
         $token = $request->bearerToken('token');
         $publicKey = file_get_contents(storage_path('keys/public.pem'));
-        if (!empty($token) && $token != 'nglow') {
+        if (!empty($token) && $token != Config::get('constant')['token_default']) {
             try {
                 $decoded = JWT::decode($token, new Key($publicKey, 'RS256'));
                 if (!empty($decoded) && !empty($decoded->guard) && $decoded->guard == 'admin') {

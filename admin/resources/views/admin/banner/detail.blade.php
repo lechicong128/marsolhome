@@ -1,181 +1,119 @@
 <form id="bannerForm" action="admin/banner/submit/{{$id}}" method="post" data-parsley-validate novalidate>
     {{csrf_field()}}
-    <style>
-        .tab-btn {
-            flex: 1;
-            padding: 15px 20px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            color: #6c757d;
-        }
+    
+    <!-- Hidden Inputs for other fields to support backend logic -->
+    <input type="hidden" name="name" value="{{ !empty($banner->name) ? $banner->name : 'Banner '.uniqid() }}">
+    <input type="hidden" name="title[vi]" value="{{ !empty($banner->translations['vi']['title']) ? $banner->translations['vi']['title'] : 'Banner' }}">
+    <input type="hidden" name="content[vi]" value="{{ !empty($banner->translations['vi']['content']) ? $banner->translations['vi']['content'] : '' }}">
+    <input type="hidden" name="is_app" value="{{ isset($banner->is_app) ? $banner->is_app : 0 }}">
+    <input type="hidden" name="is_background" value="{{ !empty($banner->is_background) ? $banner->is_background : 0 }}">
+    <input type="hidden" name="hidden_button" value="{{ !empty($banner->hidden_button) ? $banner->hidden_button : 0 }}">
+    <input type="hidden" name="show_web_app" value="{{ !empty($banner->show_web_app) ? $banner->show_web_app : 0 }}">
+    
+    @if(!empty($banner->translations['vi']['image']))
+        <input type="hidden" name="images_vi_old" id="images_vi_old" value="{{ $banner->translations['vi']['image'] }}">
+    @endif
 
-        .tab-btn.active {
-            /*background: #3a94ef;*/
-            color: white;
-            /*box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);*/
-            margin-right: 5px;
-            border: 1px;
-        }
-        .nav.nav-tabs > li.tab-btn.active > a {
-            background-color: #3a94ef;
-            color: white !important;
-            border: 0;
-            border-radius: 10px;
-        }
-
-        .tab-btn:hover:not(.active) {
-            background: rgba(79, 172, 254, 0.1);
-            color: #4facfe;
-        }
-    </style>
-    <div class="modal-dialog modal-lg" style="min-width: 70%">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">{{$title}}</h4>
+    <div class="modal-dialog modal-lg" role="document" style="margin: 8% auto;">
+        <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); background: #ffffff;max-width: 100%;!important">
+            
+            <!-- Modal Header -->
+            <div class="modal-header" style="position: relative !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 20px 24px; border-bottom: 1px solid #f3f4f6; background: #ffffff; min-height: 60px !important; width: 100% !important;">
+                <h4 class="modal-title" style="font-weight: 700; font-size: 18px; color: #111827; margin: 0 !important; font-family: 'Inter', sans-serif;">
+                    {{ $title }}
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border: none !important; background: transparent !important; font-size: 24px !important; color: #9ca3af !important; line-height: 1 !important; padding: 0 !important; cursor: pointer !important; transition: all 0.2s !important; opacity: 0.8 !important;" onmouseover="this.style.color='#111827'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#9ca3af'; this.style.transform='scale(1)'">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="hidden" name="id" value="{{!empty($banner) ? $banner['id'] : 0}}" >
-                        <div class="show_error" style="color: red"></div>
-                        <div class="form-group">
-                            <label for="name">{{lang('dt_name_banner')}}</label>
-                            <input type="text" name="name" class="form-control name" value="{{!empty($banner) ? $banner->name : ''}}">
+            
+            <!-- Modal Body -->
+            <div class="modal-body" style="padding: 24px;">
+                <div class="show_error" style="color: #ef4444; margin-bottom: 15px; font-size: 13px; font-weight: 500;"></div>
+                
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="font-weight: 600; font-size: 14px; color: #374151; margin-bottom: 10px; display: block; font-family: 'Inter', sans-serif;">
+                        {{lang('dt_image')}} @if(empty($banner->translations['vi']['image'])) <span style="color: #ef4444;">*</span> @endif
+                    </label>
+                    
+                    <!-- Premium Drag and Drop Styled File Upload -->
+                    <div style="position: relative; border: 2px dashed #d1d5db; border-radius: 12px; padding: 20px; text-align: center; background: #f9fafb; cursor: pointer; transition: all 0.25s ease;" 
+                         id="upload_drop_zone"
+                         onmouseover="this.style.borderColor='#3a94ef'; this.style.background='#f0f7ff';" 
+                         onmouseout="this.style.borderColor='#d1d5db'; this.style.background='#f9fafb';">
+                        
+                        <input type="file" name="images[vi]" id="images_vi" class="image" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;" {{ empty($banner->translations['vi']['image']) ? 'required' : '' }}>
+                        
+                        <div id="upload_prompt" style="pointer-events: none;">
+                            <i class="fa fa-cloud-upload" style="font-size: 36px; color: #9ca3af; margin-bottom: 8px;"></i>
+                            <p style="margin: 0; font-size: 13px; color: #4b5563; font-weight: 500;">Click để chọn ảnh hoặc kéo thả ảnh vào đây</p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9ca3af;">Định dạng: JPG, PNG, GIF, WEBP</p>
                         </div>
-                        <div class="form-group div_hide_app {{!empty($banner->is_app) ? 'hide' : ''}}">
-                            <div class="checkbox">
-                                <input type="checkbox" {{!empty($banner->is_background) ? 'checked' : ''}} id="is_background" value="1" name="is_background" data-parsley-multiple="active">
-                                <label for="is_background">{{lang('is_background')}}</label>
-                            </div>
-                        </div>
-                        <!-- <hr/> -->
-                        <div class="form-group hide">
-                            <label >{{lang('type_banner')}}</label><br/>
-                            <div class="radio radio-custom radio-inline mbot10">
-                                <input type="radio" id="is_app_0" name="is_app" value="0" {{empty($banner->is_app) ? 'checked' : ''}}>
-                                <label for="is_app_0">{{lang('banner_website')}}</label>
-                            </div>
-                            <div class="radio radio-custom radio-inline mbot10">
-                                <input type="radio" id="is_app_1" name="is_app" value="1" {{!empty($banner->is_app) ? 'checked' : ''}}>
-                                <label for="is_app_1">{{lang('banner_app')}}</label>
-                            </div>
-                        </div>
-                        <div class="form-group hide">
-                            <div class="checkbox checkbox-custom radio-inline mbot10">
-                                <input type="checkbox" id="hidden_button" name="hidden_button" value="1" {{!empty($banner->hidden_button) ? 'checked' : ''}}>
-                                <label for="hidden_button">{{lang('hidden_button_to_website')}}</label>
-                            </div>
-                        </div>
-                        <div class="form-group hide">
-                            <div class="checkbox checkbox-custom radio-inline mbot10">
-                                <input type="checkbox" id="show_web_app" name="show_web_app" value="1" {{!empty($banner->show_web_app) ? 'checked' : ''}}>
-                                <label for="show_web_app">{{lang('show_web_app')}}</label>
-                            </div>
-                        </div>
-                        <!-- <hr/> -->
-                        <ul class="nav nav-tabs nav-justified row hide">
-                            @foreach($language as $lang)
-                                <li class="tab-btn {{$lang->is_default ? 'active' : ''}}">
-                                    <a href="#tab-info-{{$lang->code}}" data-toggle="tab" aria-expanded="false">
-                                        <span class="visible-xs"><i class="fa fa-home"></i></span>
-                                        <span class="hidden-xs">{{$lang->name}}</span>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                        <div class="tab-content row" style="padding-left:10px;padding-right:10px;">
-                            @foreach($language as $lang)
-                                <div id="tab-info-{{$lang->code}}" class="tab-pane fade {{$lang->is_default ? 'in active' : ''}}">
-                                    <div class="form-group">
-                                        <label for="image">{{lang('dt_image')}}</label>
-                                        <input type="file" name="images[{{$lang->code}}]" multiple id="images_{{$lang->code}}" class="filestyle image"
-                                               data-buttonbefore="true">
-                                        @if(!empty($banner->translations[$lang->code]['image']))
-                                            <input type="hidden" name="images_{{$lang->code}}_old" id="images_{{$lang->code}}_old"
-                                                   class="images_{{$lang->code}}_old"
-                                                   data-buttonbefore="true" value="{{!empty($banner->translations[$lang->code]['image']) ? $banner->translations[$lang->code]['image'] : ''}}">
-                                            {!! loadImageNew(asset('storage/'.$banner->translations[$lang->code]['image']),'260px','','',false,'150px') !!}
-                                        @endif
-                                    </div>
-
-                                    <div class="form-group div_hide_app {{!empty($banner->is_app) ? 'hide' : ''}}">
-                                        <label for="image">{{lang('c_banner_img_mobile')}}</label>
-                                        <input type="file" name="images_website[{{$lang->code}}]" multiple id="images_website_{{$lang->code}}" class="filestyle image"
-                                               data-buttonbefore="true">
-                                        @if(!empty($banner->translations[$lang->code]['image']))
-                                            <input type="hidden" name="images_website_{{$lang->code}}_old" id="images_website_{{$lang->code}}_old"
-                                                   class="images_website_{{$lang->code}}_old"
-                                                   data-buttonbefore="true" value="{{!empty($banner->translations[$lang->code]['image_website']) ? $banner->translations[$lang->code]['image_website'] : ''}}">
-                                            {!! loadImageNew(asset('storage/'.$banner->translations[$lang->code]['image_website']),'260px','','',false,'150px') !!}
-                                        @endif
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="title{{$lang->code}}">{{lang('title')}}</label>
-                                        <textarea type="text" name="title[{{$lang->code}}]"
-                                                  id="title_{{$lang->code}}"
-                                                  class="form-control editor_short">{{$banner->translations[$lang->code]['title'] ?? ''}}</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="content_{{$lang->code}}">{{lang('content_banner')}}</label>
-                                        <textarea type="text" name="content[{{$lang->code}}]"
-                                                   id="content_{{$lang->code}}"
-                                                   class="form-control editor_short">{{$banner->translations[$lang->code]['content'] ?? ''}}</textarea>
-                                    </div>
-
-                                </div>
-                            @endforeach
                     </div>
+                    
+                    <!-- Live Image Preview Frame -->
+                    <div class="image-preview-wrapper" style="margin-top: 20px; text-align: center;">
+                        <div style="position: relative; display: inline-block; border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.05); background: #ffffff; padding: 8px; width: 100%; min-height: 120px; display: flex; align-items: center; justify-content: center;">
+                            <img id="image_preview_el" src="{{ !empty($banner->translations['vi']['image']) ? asset('storage/'.$banner->translations['vi']['image']) : '' }}" 
+                                 style="max-width: 100%; max-height: 180px; object-fit: contain; border-radius: 8px; display: {{ !empty($banner->translations['vi']['image']) ? 'block' : 'none' }}; margin: 0 auto;" />
+                            
+                            <div id="no_image_placeholder" style="color: #9ca3af; padding: 20px 0; display: {{ !empty($banner->translations['vi']['image']) ? 'none' : 'block' }}; text-align: center; width: 100%;">
+                                <i class="fa fa-picture-o" style="font-size: 40px; margin-bottom: 8px; display: block; color: #d1d5db;"></i>
+                                <span style="font-size: 13px; font-weight: 500;">Chưa chọn hình ảnh</span>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary waves-effect waves-light"
-                        type="submit">{{lang('dt_save')}}</button>
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal">{{lang('dt_close')}}</button>
+            
+            <!-- Modal Footer -->
+            <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #f3f4f6; display: flex; justify-content: flex-end; gap: 12px; background: #f9fafb; margin: 0;">
+                <button class="btn" type="button" data-dismiss="modal" style="background: #ffffff; color: #4b5563; border: 1px solid #d1d5db; font-weight: 600; padding: 9px 18px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; outline: none;" onmouseover="this.style.background='#f3f4f6'; this.style.color='#111827';" onmouseout="this.style.background='#ffffff'; this.style.color='#4b5563';">
+                    Hủy bỏ
+                </button>
+                <button class="btn" id="saveBtn" type="submit" style="background: #d4a017; color: white; border: none; font-weight: 600; padding: 9px 20px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; outline: none; box-shadow: 0 2px 4px rgba(212, 160, 23, 0.2);" onmouseover="this.style.background='#b8860b'; this.style.boxShadow='0 4px 8px rgba(212, 160, 23, 0.3)';" onmouseout="this.style.background='#d4a017'; this.style.boxShadow='0 2px 4px rgba(212, 160, 23, 0.2)';">
+                    Lưu Lại
+                </button>
             </div>
+            
         </div>
     </div>
 </form>
-<script>
-    @if(empty($banner->id))
-        $(function() {
-            $(`#is_app_${$('input[name="status_search"]').val()}`).prop('checked', true);
-            isApp = $('input[name="status_search"]').val();
-            if (isApp == 1) {
-                $('.div_hide_app').addClass('hide');
-            } else {
-                $('.div_hide_app').removeClass('hide');
-            }
-        })
-    @endif
-    tinymce.remove('.editor_short');
-    tinymce.init(editor_short_config);
 
-    $('input[name="is_app"]').change(function() {
-        var isApp = $(this).val();
-        if (isApp == 1) {
-            $('.div_hide_app').addClass('hide');
-        } else {
-            $('.div_hide_app').removeClass('hide');
+<script>
+    // Live image preview handler
+    $('#images_vi').change(function(e) {
+        var input = e.target;
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#image_preview_el').attr('src', e.target.result).show();
+                $('#no_image_placeholder').hide();
+            }
+            reader.readAsDataURL(input.files[0]);
         }
     });
+
+    // Form validation and submit
     $("#bannerForm").validate({
         rules: {
+            @if(empty($banner->translations['vi']['image']))
+                "images[vi]": {
+                    required: true
+                }
+            @endif
         },
         messages: {
+            "images[vi]": {
+                required: "Vui lòng chọn hình ảnh banner"
+            }
         },
         submitHandler: function (form) {
             var url = form.action;
-            var form = $(form),
+            var $form = $(form),
                 formData = new FormData(),
-                formParams = form.serializeArray();
+                formParams = $form.serializeArray();
 
-            $.each(form.find('input[type="file"]'), function (i, tag) {
+            $.each($form.find('input[type="file"]'), function (i, tag) {
                 $.each($(tag)[0].files, function (i, file) {
                     formData.append(tag.name, file);
                 });
@@ -193,24 +131,30 @@
                 processData: false,
                 data: formData,
             })
-                .done(function (data) {
-                    if (data.result) {
+            .done(function (data) {
+                if (data.result) {
+                    if (typeof oTable !== 'undefined') {
                         oTable.draw();
-                        $('.modal-dialog .close').trigger('click');
-                        alert_float('success',data.message);
-                    } else {
-                        $(".show_error").html(data.message);
-                        alert_float('error',data.message);
                     }
-                })
-                .fail(function (err) {
-                    htmlError = '';
+                    $('.modal-dialog .close').trigger('click');
+                    alert_float('success', data.message);
+                } else {
+                    $(".show_error").html(data.message);
+                    alert_float('error', data.message);
+                }
+            })
+            .fail(function (err) {
+                var htmlError = '';
+                if (err.responseJSON && err.responseJSON.errors) {
                     for (var [ el, message ] of Object.entries(err.responseJSON.errors)) {
                         htmlError += `<div>${message}</div>`;
                     }
-                    $(".show_error").html(htmlError);
-                    alert_float('error',htmlError);
-                });
+                } else {
+                    htmlError = 'Đã xảy ra lỗi, vui lòng thử lại.';
+                }
+                $(".show_error").html(htmlError);
+                alert_float('error', htmlError);
+            });
             return false;
         }
     });

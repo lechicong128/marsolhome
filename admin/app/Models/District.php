@@ -9,5 +9,6 @@ class District extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_district';
+    protected $table = 'tbldistrict';
+    protected $primaryKey = 'districtid';
 }

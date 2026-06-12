@@ -46,7 +46,7 @@ class ClientsController extends Controller
             access_denied();
         }
         $title = lang('Quản lý thành viên');
-        return view('admin.products.detail',[
+        return view('admin.clients.list',[
             'title' => $title,
         ]);
     }
@@ -216,9 +216,11 @@ class ClientsController extends Controller
             })
             ->editColumn('active', function ($client) {
                 $customer_id = $client['id'];
-                $classes = $client['active'] == 1 ? "btn-info" : "btn-danger";
-                $content = $client['active'] == 1 ? "Hoạt động" : "Khoá";
-                $str = "<a class='dt-update text-center btn btn-xs $classes' href='admin/clients/active/$customer_id'>$content</a>";
+                if ($client['active'] == 1) {
+                    $str = "<a class='dt-update status-badge status-active' href='admin/clients/active/$customer_id'><i class='fa fa-check-circle'></i> " . lang('Hoạt động') . "</a>";
+                } else {
+                    $str = "<a class='dt-update status-badge status-locked' href='admin/clients/active/$customer_id'><i class='fa fa-times-circle'></i> " . lang('Khoá') . "</a>";
+                }
                 return $str;
             })
             ->editColumn('avatar', function ($client) {
@@ -233,7 +235,19 @@ class ClientsController extends Controller
 
                 return $str;
             })
-            ->rawColumns(['options', 'active', 'avatar','img_membership_level', 'phone', 'created_at', 'fullname','referral_code','point_membership','ranking_date','invoice_limit','date_active','code_introduce_parent'])
+            ->editColumn('type_client', function ($client) {
+                if ($client['type_client'] == 0) {
+                    $str = "<span class='type-badge type-viewer'><i class='fa fa-eye'></i> " . lang('Người xem') . "</span>";
+                } elseif ($client['type_client'] == 1) {
+                    $str = "<span class='type-badge type-sale'><i class='fa fa-id-badge'></i> " . lang('Nhân viên sale') . "</span>";
+                } elseif ($client['type_client'] == 2) {
+                    $str = "<span class='type-badge type-admin'><i class='fa fa-shield'></i> " . lang('Admin') . "</span>";
+                } else {
+                    $str = "<span class='type-badge type-undefined'><i class='fa fa-question-circle'></i> " . lang('Chưa xác định') . "</span>";
+                }
+                return $str;
+            })
+            ->rawColumns(['options', 'active', 'avatar', 'type_client', 'img_membership_level', 'phone', 'created_at', 'fullname','referral_code','point_membership','ranking_date','invoice_limit','date_active','code_introduce_parent'])
             ->setTotalRecords($data['recordsTotal']) // tổng số bản ghi
             ->setFilteredRecords($data['recordsFiltered']) // sau khi lọc
             ->with([
@@ -330,13 +344,11 @@ class ClientsController extends Controller
                 return '<div class="text-center">'.$data['phone'].'</div>';
             })
             ->addColumn('type_client', function ($data) {
-                $classesT = 'btn-danger';
-                $contentT = lang('client_type_1');
                 if ($data['type_client'] == 2) {
-                    $classesT = 'btn-info';
-                    $contentT = lang('client_type_2');
+                    $str = "<span class='type-badge type-sale'><i class='fa fa-star'></i> " . lang('client_type_2') . "</span>";
+                } else {
+                    $str = "<span class='type-badge type-viewer'><i class='fa fa-user'></i> " . lang('client_type_1') . "</span>";
                 }
-                $str = "<a class='text-center btn btn-xs $classesT'>$contentT</a>";
                 return $str;
             })
             ->addColumn('created_at', function ($data) {
@@ -347,9 +359,11 @@ class ClientsController extends Controller
             })
             ->addColumn('active', function ($data){
                 $customer_id = $data['id'];
-                $classes = $data['active'] == 1 ? "btn-info" : "btn-danger";
-                $content = $data['active'] == 1 ? "Hoạt động" : "Khoá";
-                $str = "<a class='dt-update text-center btn btn-xs $classes'>$content</a>";
+                if ($data['active'] == 1) {
+                    $str = "<a class='dt-update status-badge status-active'><i class='fa fa-check-circle'></i> " . lang('Hoạt động') . "</a>";
+                } else {
+                    $str = "<a class='dt-update status-badge status-locked'><i class='fa fa-times-circle'></i> " . lang('Khoá') . "</a>";
+                }
                 return $str;
             })
             ->addIndexColumn()
@@ -426,5 +440,40 @@ class ClientsController extends Controller
         $data = $response->getData(true);
         $data = $data['data'];
         return response()->json($data);
+    }
+
+    public function ajaxSearch() {
+        if (!has_permission('clients', 'view')) {
+            return response()->json(['results' => []]);
+        }
+        $q = $this->request->input('q');
+        $typeClientSearch = $this->request->input('type_client_search');
+        $newRequest = new \Illuminate\Http\Request();
+        $mergeData = [
+            'search' => ['value' => $q],
+            'start' => 0,
+            'length' => 50
+        ];
+        if ($typeClientSearch) {
+            $mergeData['type_client_search'] = $typeClientSearch;
+        }
+        $newRequest->merge($mergeData);
+        $response = $this->dbAccount->getListCustomer($newRequest);
+        $data = $response->getData(true);
+        
+        $results = [];
+        if (!empty($data['data'])) {
+            foreach ($data['data'] as $item) {
+                $results[] = [
+                    'id' => $item['id'],
+                    'text' => ($item['fullname'] ?? '') . ' - ' . ($item['phone'] ?? ''),
+                    'fullname' => $item['fullname'] ?? '',
+                    'phone' => $item['phone'] ?? ''
+                ];
+            }
+        }
+        return response()->json([
+            'results' => $results
+        ]);
     }
 }

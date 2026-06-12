@@ -268,6 +268,36 @@
                         <i class="fa fa-shield" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('c_setting_version_app')}}
                     </a>
                 </li>
+                <li>
+                    <a href="admin/settings?group=content_comment" class="ud-settings-nav-link {{(empty($group) || $group == 'content_comment') ? 'active' : ''}}">
+                        <i class="fa fa-shield" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('c_setting_content_comment')}}
+                    </a>
+                </li>
+                <li>
+                    <a href="admin/settings?group=content_report_comment" class="ud-settings-nav-link {{(empty($group) || $group == 'content_report_comment') ? 'active' : ''}}">
+                        <i class="fa fa-flag" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('c_setting_content_report_comment')}}
+                    </a>
+                </li>
+                <li>
+                    <a href="admin/settings?group=policy" class="ud-settings-nav-link {{(empty($group) || $group == 'policy') ? 'active' : ''}}">
+                        <i class="fa fa-shield" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('c_setting_policy')}}
+                    </a>
+                </li>
+                <li>
+                    <a href="admin/settings?group=application_comments" class="ud-settings-nav-link {{(empty($group) || $group == 'application_comments') ? 'active' : ''}}">
+                        <i class="fa fa-shield" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('c_setting_application_comments')}}
+                    </a>
+                </li>
+                <li>
+                    <a href="admin/settings?group=contacts" class="ud-settings-nav-link {{(empty($group) || $group == 'contacts') ? 'active' : ''}}">
+                        <i class="fa fa-shield" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('c_setting_contacts')}}
+                    </a>
+                </li>
+                <li>
+                    <a href="admin/settings?group=banner" class="ud-settings-nav-link {{(empty($group) || $group == 'banner') ? 'active' : ''}}">
+                        <i class="fa fa-shield" style="width: 24px; text-align: center; margin-right: 8px;"></i> {{lang('dt_banner')}}
+                    </a>
+                </li>
             </ul>
         </div>
 

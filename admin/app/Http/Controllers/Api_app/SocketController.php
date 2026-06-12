@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Libraries\Socket;
 
 class SocketController extends AuthController
 {
@@ -19,19 +20,21 @@ class SocketController extends AuthController
         DB::enableQueryLog();
         $this->baseUrlAdmin = config('services.storage.url');
         $this->baseUrl = config('services.storage.url');
+        $this->socket = new Socket();
     }
 
     public function login_socket(){
         $user_id = $this->request->input('user_id');
         $user_name = $this->request->input('user_name');
+        $db_name = $this->request->input('db_name');
         if ($user_id && $user_name)
         {
-            $result = ConnectSocket($user_id, $user_name);
+            $result = $this->socket->login(['user_id' => $user_id, 'user_name' => $user_name,'db_name' => $db_name]);
             if (isset($result) && !empty($result)) {
                 $data = [
                     'status' => true,
-                    'db_name' => env('DB_DATABASE', 'nglow-admin'),
-                    'sever' => get_option('link_connect_socket'),
+                    'db_name' => $db_name,
+                    'sever' => $this->socket->socket_link_connect,
                     'message' => 'Login successful',
                     'data' => $result
                 ];

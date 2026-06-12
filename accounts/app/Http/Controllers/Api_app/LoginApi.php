@@ -1754,11 +1754,8 @@ class LoginApi extends AuthController
         $id = !empty($this->request->client) ? $this->request->client->id : 0;
         if (!empty($id)) {
             $data = Clients::select(
-                'id', 'code', 'fullname', 'phone', 'email', 'prefix_phone', 'sign_up_with', 'address', 'birthday',
-                'gender',
-                'created_at', 'point', 'account_balance', 'customer_alepay_id', 'password', 'verify_phone',
-                'number_cccd', 'issued_cccd', 'date_cccd', 'number_passport', 'issued_passport', 'date_passport',
-                'referral_code', 'active', 'code_introduce', 'lang_default','address','mst','type_client','type_partner','is_leader','type_leader'
+                'id', 'code', 'fullname', 'phone', 'email', 'address', 'birthday',
+                'gender','created_at', 'active', 'lang_default','type_client'
             )->selectRaw('CONCAT("' . $this->baseUrl . '/", avatar) as avatar')
                 ->where('id', $id)
                 ->first();
@@ -1775,127 +1772,28 @@ class LoginApi extends AuthController
                     $data->is_avatar = false;
                 }
 
-                $link_referral = $this->svAdmin->get_option('short_link_referral');
-                $data->link_referral = $link_referral . '?pid=referral_own_media&af_sub1=' . $data->code_introduce . '&campaign=referral';
-
-                $customerClass = CustomerClass::select('tbl_setting_customer_class.id',
-                    DB::raw("CONCAT('" . env('STORAGE_URL') . "/',tbl_setting_customer_class.image) as image"),
-                    DB::raw("CONCAT('" . env('STORAGE_URL') . "/',tbl_setting_customer_class.icon) as icon"),
-                    DB::raw("CONCAT('" . env('STORAGE_URL') . "/',tbl_setting_customer_class.image_background) as image_background"),
-                    'pt.name',
-                    'pt.benefits',
-                    'pt.content_conditions',
-                    'tbl_setting_customer_class.percent',
-                )
-                    ->where('customer_id', $id)
-                    ->join('tbl_setting_customer_class', 'tbl_setting_customer_class.id', '=', 'tbl_customer_class.setting_customer_class_id')
-                    ->join('tbl_setting_customer_class_translations as pt', function ($join) {
-                        $join->on('pt.setting_customer_class_id', '=', 'tbl_setting_customer_class.id')
-                            ->where('pt.language', $this->_locale);
-                    })->first();
-
-
-//                $customerClass = NULL;
-                if (empty($customerClass->id)) {
-                    $customerClass = (object)[
-                        'id' => 0,
-                        'name' => lang('customer_new'),
-                    ];
-                    $customerClass->title_class_now = lang('customer_class_now_new');// tiêu đề thành viên mới
+                $homeCounts = [];
+                $transactionCounts = [];
+                if($data->type_client != 2){
+                    $admin = 0;
                 } else {
-                    $rules = DB::table('tbl_setting_customer_class_rule')
-                        ->where('setting_customer_class_id', $customerClass->id)
-                        ->get();
-                    $customerClass->benefits = str_replace('{percent}', ($customerClass->percent . '%'), $customerClass->benefits);
-                    $customerClass->title_class_now = lang('customer_class_now') . ' ' . $customerClass->name;
-                    //Nội dung thăng hạng
+                    $admin = 1;
                 }
+                if (!empty($id)) {
+                    $response = $this->svAdmin->countHomes([$id],$admin);
+                    if (isset($response['result']) && $response['result']) {
+                        $homeCounts = $response['data'];
+                    }
 
-                $customer_class_next = SettingCustomerClass::select('pt.name', 'tbl_setting_customer_class.id')
-                    ->where('tbl_setting_customer_class.id', '>', ($customerClass->id ?? 0))
-                    ->join('tbl_setting_customer_class_translations as pt', function ($join) {
-                        $join->on('pt.setting_customer_class_id', '=', 'tbl_setting_customer_class.id')
-                            ->where('pt.language', $this->_locale);
-                    })->orderBy('tbl_setting_customer_class.id', 'asc')
-                    ->first();
-                $customerClass->content_benefits_level = lang('content_benefits_level');// nội dung thăng hạng với use bình thường
-                if (empty($customerClass->id)) {
-                    $customerClass->content_benefits_level = lang('content_benefits_level_new'); // nội dung thăng hạng cho user chưa có hạng
+                }
+                if($data->type_client != 2){
+                    $data['total_home'] = $homeCounts[$id] ?? 0;
                 } else {
-                    if (empty($customer_class_next->id)) {
-                        $customerClass->content_benefits_level = lang('content_benefits_level_v2');// nội dung thăng hạng cho user đã hạng level max
-                    }
+                    $data['total_home'] = $homeCounts['total_home'] ?? 0;
                 }
-                if ($customer_class_next->id) {
-                    $customerClass->content_benefits_level = str_replace(
-                        '{name_customer_class_next}',
-                        $customer_class_next->name,
-                        $customerClass->content_benefits_level
-                    );
-                }
-
-                $customerClass->content_benefits_level = str_replace('{name_customer_class}', $customerClass->name, $customerClass->content_benefits_level);
-                $customerClass->content_benefits_level = str_replace('{share_next_class}', 2, $customerClass->content_benefits_level);
-                $content_conditions = $customerClass->content_conditions ?? '';
-                if (!empty($rules)) {
-                    foreach ($rules as $k => $v) {
-                        if ($v->type == 'review') {
-                            $content_conditions = str_replace('{review}', $v->rule, $content_conditions);
-                            $customerClass->content_benefits_level = str_replace(
-                                '{review}',
-                                $v->rule,
-                                $customerClass->content_benefits_level
-                            );
-                        } else {
-                            if ($v->type == 'affiliate') {
-                                $content_conditions = str_replace('{affiliate}', $v->rule, $content_conditions);
-                                $customerClass->content_benefits_level = str_replace(
-                                    '{affiliate}',
-                                    $v->rule,
-                                    $customerClass->content_benefits_level
-                                );
-                            }
-                        }
-                    }
-                }
-
-                $customerClass->content_conditions = $content_conditions;
-
-                //Gán cứng
-                $customerClass->date_start_class = '2025-12-01'; // gán cứng
-                $customerClass->date_end_class = '2026-12-01'; // gán cứng
-                $customerClass->point = 2600; // gán cứng
-                $customerClass->count_share = 100; // gán cứng
-                $customerClass->bonus = 139000; // gán cứng
-                $customerClass->radio_class_next = 60; // gán cứng
-                //end Gán cứng
-
-                $data->customer_class = $customerClass ?? NULL;
-
-                $level = get_level_role($id);
-                $data->level = $level;
-                $check_default_percent = 0;
-                $percent_discount = 0;
-                if($data->is_leader == 1){
-                    $percent_discount = $this->svAdmin->get_option('percent_leader');
-                    $check_default_percent = 1;
-                    $data->type_leader = getListTypeLeader($data->type_leader);
-                } else {
-                    $check_leader = get_parent_customer_leader($id);
-                    $dtCheckF1 = DB::table('tbl_client_introduce')->where('id_client_introduce',$check_leader)->where('id_client',$id)->first();
-                    if (!empty($dtCheckF1) && $dtCheckF1->id_client == $id){
-                        $percent_discount = $this->svAdmin->get_option('percent_f1');
-                        $check_default_percent = 1;
-                    }
-                    $data->type_leader = null;
-                }
-                $data->check_default_percent = $check_default_percent;
-                $data->percent_discount = $percent_discount;
-
                 $dataResult['result'] = true;
                 $dataResult['info'] = $data;
                 $dataResult['lang_default'] = $data->lang_default ?? 'vi';
-                $dataResult['getListTypePartner'] = getListTypePartner();
                 $dataResult['title'] = lang('notification');
                 $dataResult['message'] = lang('c_get_info_success');
                 return response()->json($dataResult);

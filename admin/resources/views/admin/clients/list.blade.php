@@ -29,9 +29,9 @@
 </div>
 <ul class="nav nav-tabs">
     <li class="H-search active"><a data-toggle="tab" data-id="-1">Tất cả (<b class="count_all">0</b>)</a></li>
-    <li class="H-search"><a data-toggle="tab" data-id="0">Người xem (<b class="count_type_0">0</b>)</a></li>
-    <li class="H-search"><a data-toggle="tab" data-id="1">Môi giới (<b class="count_type_1">0</b>)</a></li>
-    <li class="H-search"><a data-toggle="tab" data-id="2">Chính chủ (<b class="count_type_2">0</b>)</a></li>
+    <li class="H-search"><a data-toggle="tab" data-id="0">Khách hàng (<b class="count_type_0">0</b>)</a></li>
+    <li class="H-search"><a data-toggle="tab" data-id="1">Nhân viên sale (<b class="count_type_1">0</b>)</a></li>
+    <li class="H-search"><a data-toggle="tab" data-id="2">Admin (<b class="count_type_2">0</b>)</a></li>
 </ul>
 <span class="group_search">
     <input type="hidden" name="type_client_search" id="type_client_search" value="-1">
@@ -79,7 +79,7 @@
                 'order': [
                     [5, 'desc']
                 ],
-                'responsive': false,
+                'responsive': true,
                 "ajax": {
                     "type": "POST",
                     "url": "api/customer/getListCustomer",
@@ -235,7 +235,7 @@
 
             return (windowHeight - totalUsed) + 'px';
         }
-        $('#table_client').on('shown.bs.dropdown', '.dropdown', function () {
+          $('#table_client').on('shown.bs.dropdown', '.dropdown', function () {
             let dropdown = $(this);
             let rect = this.getBoundingClientRect();
 
@@ -243,6 +243,12 @@
                 dropdown.addClass('dropup');
             } else {
                 dropdown.removeClass('dropup');
+            }
+
+            if (window.innerWidth - rect.right < 250) {
+                dropdown.addClass('dropleft');
+            } else {
+                dropdown.removeClass('dropleft');
             }
         });
     </script>

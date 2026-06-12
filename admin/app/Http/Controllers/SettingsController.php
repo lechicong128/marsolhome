@@ -102,7 +102,7 @@ class SettingsController extends Controller
                 if (!empty($listData)) {
                     unset($listData['check_otp']);
                     foreach ($listData as $key => $value) {
-                        $arr = ['money_max_referral','exchange_rate_haru_wallet','withdrawal_limit','number_coins_received_review'];
+                        $arr = ['money_max_referral','exchange_rate_haru_wallet','withdrawal_limit','number_coins_received_review','price_max','area_max'];
                         if (in_array($key, $arr)) {
                             $value = number_unformat($value);
                         }

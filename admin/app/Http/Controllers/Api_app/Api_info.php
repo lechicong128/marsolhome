@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helpers\FilesHelpers;
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\FeaturedLocation;
 use App\Models\Terms;
 use App\Models\TermsTranslations;
 use App\Models\IconApp;
@@ -36,7 +37,24 @@ class Api_info extends AuthController
         $this->dbService = $serviceService;
 
     }
-
+    public function getvideodemo()
+    {
+        $video = [
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video1.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video2.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video3.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video4.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video5.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video6.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video7.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video8.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video9.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video10.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video11.mp4',
+            'https://marsolhome-admin.fmrp.vn/upload/video_demo/video12.mp4',
+        ];
+        return response()->json($video, 200);
+    }
     //(1)
     public function get_info_settings()
     {
@@ -162,7 +180,33 @@ class Api_info extends AuthController
 
         return response()->json($data, 200);
     }
+    public function get_settingwebs()
+    {
+        $_locale = $this->request->_locale;
+        $locale_default_vn = config('constant.locale_default_vn');
 
+        $dataField = DB::table('tbl_options')->where(function ($field) {
+            $field->whereIn('name', [
+                'link_support',
+                'link_tvlh',
+                'link_ai_group',
+                'link_messenger',
+                'link_facebook',
+                'link_contact_tiktok',
+                'link_youtube',
+                'contact_phone',
+                'contact_email',
+                'working_hours',
+                'contact_address',
+                'contact_link_google_map',
+            ]); //ID của onesinal và key của onesinal
+        })->get();
+        $data = [];
+        foreach ($dataField as $key => $value) {
+            $data[$value->name] = $value->value;
+        }
+        return response()->json($data, 200);
+    }    
     public function get_info()
     {
         $_locale = $this->request->_locale;
@@ -198,12 +242,34 @@ class Api_info extends AuthController
                 'sub_title_introduce_1',
                 'title_introduce_2',
                 'sub_title_introduce_2',
+                'price_max',
+                'area_max',
+                'distance_max',
+                'policy',
+                'link_support',
+                'link_tvlh',
+                'link_ai_group'
             ]); //ID của onesinal và key của onesinal
         })->get();
         $data = [];
         foreach ($dataField as $key => $value) {
             $data[$value->name] = $value->value;
         }
+        $data['db_name'] = config('database.connections.mysql.database');
+        $data['url_socket'] = get_option('link_connect_socket');
+        $data['comments_sample'] = DB::table('tbl_content_comment')->select('id','content')->get();
+        $data['listTypeHome'] = getListTypeHome();
+        $data['getListStatusHome'] = getListStatusHome();
+        $data['getListSource'] = [
+            [
+                'id' => 1,
+                'name' => 'Nhân viên sale'
+            ],
+            [
+                'id' => 2,
+                'name' => 'Admin'
+            ]
+        ];
         return response()->json($data, 200);
     }
     public function get_version_app()
@@ -651,6 +717,25 @@ class Api_info extends AuthController
         $app = new App();
         $app->flushCache();
         return response()->json(['result' => true, 'message' => 'Cập nhật thành công']);
+    }
+
+    public function get_info_home() {
+        $banner = DB::table('tbl_banner as b')
+            ->join('tbl_banner_translations as bt', 'b.id', '=', 'bt.id_banner')
+            ->where('b.is_app', 0)
+            ->where('b.active', 1)
+            ->where('bt.language', 'vi')
+            ->whereNotNull('bt.image')
+            ->where('bt.image', '!=', '')
+            ->select(DB::raw("CONCAT('".$this->baseUrl."/', bt.image) AS image"))
+            ->orderByDesc('b.order_by')
+            ->get();
+        return response()->json([
+            'result' => true,
+            'data' => [
+                'banner' => $banner,
+            ]
+        ], 200);
     }
 
 }

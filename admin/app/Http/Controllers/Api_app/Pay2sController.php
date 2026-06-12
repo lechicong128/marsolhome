@@ -73,7 +73,6 @@ class Pay2sController extends AuthController
             'memo'          => $code,
             'is_mask'       => 0,
         ]);
-
         if (empty($resultQr)) {
             return ['qr' => null, 'message' => 'Tạo mã QR thất bại'];
         }

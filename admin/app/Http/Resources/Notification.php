@@ -19,6 +19,7 @@ class Notification extends JsonResource
         if (empty($_locale)){
             $_locale = 'vi';
         }
+        $arrTypeNoti = ['notifySaveHome','notifyLikeCommentHome','notifyDisLikeCommentHome','notifyLikePost','notifyCommentHome','notifySaveHome'];
         $json_data = json_decode($this->json_data);
         $icon = null;
         $banner = null;
@@ -30,12 +31,16 @@ class Notification extends JsonResource
                 $banner = !empty($dtModuleNoti->banner) ? asset('storage/'.$dtModuleNoti->banner) : null;
             }
         }
-        $notiTran = $this->notification_tran->where('language',$_locale)->first();
+        if(in_array($this->object_type, $arrTypeNoti)) {
+            if (!empty($json_data)) {
+                $json_data->customer = $this->customer ?? null;
+            }
+        }
         return [
             'id' => $this->id,
             'object_id' => $this->object_id,
             'object_type' => $this->object_type,
-            'json_data' => json_decode($this->json_data),
+            'json_data' => $json_data,
             'title' => !empty($notiTran) ? $notiTran->title : $this->title,
             'content' => !empty($notiTran) ? $notiTran->content : $this->content,
             'content_html' => str_replace('src="/storage', 'src="'.asset('/storage').'', $this->content_html),

@@ -5,7 +5,10 @@
     <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Admin Panel">
-    <meta name="author" content="PTGrow">
+    <meta name="author" content="">
+     @if(str_contains(request()->getHost(), 'trycloudflare.com'))
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    @endif
     <link href="{{get_option('favicon')}}" rel="shortcut icon">
     <title>{{get_option('name_company')}}</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -232,7 +235,7 @@ jQuery(document).ready(function ($) {
     var notificationsCountElem = $('.noti-count-badge');
     var notificationsCount = parseInt(notificationsCountElem.data('count') || 0);
     var notifications = notificationsWrapper.find('div.div-data-noti');
-    pusher_key = null;
+    pusher_key = "{{get_option('pusher')}}";
     Pusher.logToConsole = true;
     var pusher = new Pusher(`${pusher_key}`, { cluster: 'ap1' });
     var channel = pusher.subscribe('notifications-channel-<?php echo get_staff_user_id(); ?>-staff');

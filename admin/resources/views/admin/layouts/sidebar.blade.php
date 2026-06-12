@@ -2,7 +2,7 @@
 
 <div class="sidebar-logo" style="display: flex; justify-content: center; align-items: center; padding: 15px 10px;">
     <a href="{{ url('admin/dashboard') }}" style="display: block; width: 100%; text-align: center;">
-        <img src="{{ get_option('logo') ? get_option('logo') : asset('images/default-logo.png') }}" alt="Logo" onerror="this.onerror=null;this.src='{{ asset('images/default-logo.png') }}';" style="width: 110px; max-width: 100%; height: auto; object-fit: contain; margin: 0 auto;">
+        <img src="{{ get_option('logo') ? get_option('logo') : asset('images/default-logo.png') }}" alt="Logo" onerror="this.onerror=null;this.src='{{ asset('images/default-logo.png') }}';" style="width: 140px; max-width: 100%; height: auto; object-fit: contain; margin: 0 auto;">
     </a>
 </div>
 

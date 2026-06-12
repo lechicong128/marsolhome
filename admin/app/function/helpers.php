@@ -1789,7 +1789,7 @@ function send_zalo($phone = 0, $event = null, $template_id = 0, $data = [], $acc
         $content_api = str_replace('{' . $key . '}', '"' . $value . '"', $content_api);
     }
 //    $content_api = str_replace('{otp}', '"' . $data['otp'] . '"', $content_api);
-    if ($template_id == '538989') {
+    if ($template_id == '583167') {
         $content = 'Mã xác thực của bạn là<br/>OTP: ' . $data['otp'];
     }
     else if ($template_id == '492827') {
@@ -3052,7 +3052,7 @@ function getValueTypeFuel($id)
 //Hình ảnh mặc định
 function imgDefault()
 {
-    return 'admin/assets/images/users/avatar-1.jpg';
+    return 'admin/assets/images/avatar.png';
 }
 
 function imgCameraDefault()
@@ -3335,6 +3335,26 @@ function formatNumber($number, $decimals = null)
     return number_format($number, $decimals, $ds, $ts);
 }
 
+function formatNumberNew($number, $decimals = null)
+{
+    $decimals_money = get_option('decimals_number');
+    $sac = 0;
+    $thousands_sep = get_option('thousands_sep');
+    $decimals_sep = get_option('decimals_sep');
+    if ($sac) {
+        return formatSAC(formatDecimalMoney($number));
+    }
+    if (!$decimals) {
+        $decimals = $decimals_money;
+    }
+    if (!is_decimal($number)) {
+        $decimals = 0;
+    }
+    $ts = $thousands_sep == '0' ? ' ' : $thousands_sep;
+    $ds = $decimals_sep;
+    return number_format($number, $decimals, $ds, $ts);
+}
+
 function formatNumberStar($number, $decimals = null)
 {
     $decimals_number = 1;
@@ -3346,6 +3366,31 @@ function formatNumberStar($number, $decimals = null)
     $ts = $thousands_sep == '0' ? ' ' : $thousands_sep;
     $ds = $decimals_sep;
     return number_format($number, $decimals, $ds, $ts);
+}
+
+function formatMoneyVN($value): string
+{
+    $abs = abs($value);
+
+    $format = function ($num) {
+        return fmod($num, 1) == 0.0
+            ? (string)(int)$num
+            : rtrim(rtrim(number_format($num, 2, '.', ''), '0'), '.');
+    };
+
+    if ($abs >= 1_000_000_000) {
+        return $format($value / 1_000_000_000) . ' tỷ';
+    }
+
+    if ($abs >= 1_000_000) {
+        return $format($value / 1_000_000) . ' triệu';
+    }
+
+    if ($abs >= 1_000) {
+        return $format($value / 1_000) . ' k';
+    }
+
+    return (string)$value;
 }
 
 function date_range($first, $last, $step = '+1 day', $output_format = 'd/m/Y')
@@ -3683,6 +3728,9 @@ if (!function_exists('getReference')) {
                 case 'invoice':
                     $prefix = 'HD';
                     break;
+                case 'home':
+                    $prefix = 'BĐS';
+                    break; 
                 default:
                     $prefix = '';
             }
@@ -3758,7 +3806,7 @@ if (!function_exists('menuHelper')) {
                 'name' => 'Dashboard',
                 'link' => 'admin/dashboard',
                 'class' => 'dashboad',
-                'image' => 'ti-dashboard',
+                'image' => 'fa fa-dashboard',
                 'child' => []
             ],
             [
@@ -3766,7 +3814,7 @@ if (!function_exists('menuHelper')) {
                 'name' => lang('dt_category'),
                 'link' => '',
                 'class' => 'danh_muc',
-                'image' => 'admin/assets/images/icon_menu/danh_muc.png',
+                'image' => 'fa fa-list',
                 'child' => [
                     [
                         'id' => 'department',
@@ -3792,6 +3840,48 @@ if (!function_exists('menuHelper')) {
                         'link' => 'admin/payment_mode/list',
                         'image' => '',
                     ],
+                    [
+                        'id' => 'type_property',
+                        'name' => lang('dt_type_property'),
+                        'link' => 'admin/type_property/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'legal_documents',
+                        'name' => lang('dt_legal_documents'),
+                        'link' => 'admin/legal_documents/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'house_orientations',
+                        'name' => lang('dt_house_orientations'),
+                        'link' => 'admin/house_orientations/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'interior_handovers',
+                        'name' => lang('dt_interior_handovers'),
+                        'link' => 'admin/interior_handovers/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'interior_amenities',
+                        'name' => lang('dt_interior_amenities'),
+                        'link' => 'admin/interior_amenities/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'utilities',
+                        'name' => lang('dt_utilities'),
+                        'link' => 'admin/utilities/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'blog_category',
+                        'name' => lang('dt_blog_category'),
+                        'link' => 'admin/blog_category/list',
+                        'image' => '',
+                    ],
                 ]
             ],
             [
@@ -3799,7 +3889,7 @@ if (!function_exists('menuHelper')) {
                 'name' => lang('dt_user'),
                 'link' => 'admin/user/list',
                 'class' => 'nhan_vien',
-                'image' => 'admin/assets/images/icon_menu/nhan_vien.png',
+                'image' => 'fa fa-user',
                 'child' => []
             ],
             [
@@ -3807,17 +3897,77 @@ if (!function_exists('menuHelper')) {
                 'name' => lang('manager clients'),
                 'link' => 'admin/clients/list',
                 'class' => 'nguoi_dung_app',
-                'image' => 'admin/assets/images/icon_menu/nguoi_dung_app.png',
+                'image' => 'fa fa-group',
                 'child' => [],
+            ],
+            [
+                'id' => 'manage_home',
+                'name' => lang('manage_home'),
+                'link' => 'admin/manage_home/list',
+                'class' => 'nguoi_dung_app',
+                'image' => 'fa fa-home',
+                'child' => [],
+            ],
+             [
+                'id' => 'plannings',
+                'name' => 'Quản lý quy hoạch',
+                'link' => '',
+                'class' => 'quan_ly_quy_hoach',
+                'image' => 'fa fa-map',
+                'child' => [
+                    [
+                        'id' => 'plannings',
+                        'name' => 'Danh sách quy hoạch',
+                        'link' => 'admin/plannings/list',
+                        'image' => '',
+                    ],
+                    [
+                        'id' => 'land_official',
+                        'name' => 'Danh sách địa chính',
+                        'link' => 'admin/plandoffices/list',
+                        'image' => '',
+                    ]
+                ]
+            ],
+            [
+                'id' => 'application_comments',
+                'name' => 'Góp ý ứng dụng',
+                'link' => 'admin/application_comments/list',
+                'class' => 'quan_ly_gop_y_ung_dung',
+                'image' => 'fa fa-comment',
+                'child' => []
+            ],
+            [
+                'id' => 'blog',
+                'name' => 'Bài viết tin tức',
+                'link' => 'admin/blog/list',
+                'class' => 'tin_tuc',
+                'image' => 'fa fa-newspaper-o',
+                'child' => []
+            ],
+            [
+                'id' => 'reports',
+                'name' => 'Báo cáo',
+                'link' => 'admin/report/real_estate_data',
+                'class' => 'bao_cao',
+                'image' => 'fa fa-bar-chart',
+                'child' => []
+            ],
+            [
+                'id' => 'featured_locations',
+                'name' => 'Địa điểm nổi bật',
+                'link' => 'admin/featured_locations/list',
+                'image' => '',
             ],
             [
                 'id' => 'settings',
                 'name' => lang('settings'),
                 'link' => 'admin/settings',
                 'class' => 'cai_dat',
-                'image' => 'admin/assets/images/icon_menu/cai_dat.png',
+                'image' => 'fa fa-cog',
                 'child' => []
             ],
+
         ];
         return $menu;
     }
@@ -5495,5 +5645,170 @@ function createCodeIntroduceUser()
         $randomString = createCodeIntroduceUser();
     }
     return $randomString;
+}
+
+function getListTypeHome($id = 0, $type = '')
+{
+    $data = [
+        [
+            'id' => 1,
+            'name' => 'Mua bán',
+            'color' => '#047857',
+            'background_color' => '#a7f3d0'
+        ],
+        [
+            'id' => 2,
+            'name' => 'Cho thuê',
+            'color' => '#1d4ed8',
+            'background_color' => '#bfdbfe'
+        ],
+    ];
+    if (!empty($id)) {
+        $data = array_filter($data, function ($item) use ($id) {
+            return $item['id'] == $id;
+        });
+        if (!empty($data)) {
+            $data = array_values($data);
+            if (!empty($type)) {
+                return $data[0][$type];
+            }
+            return $data[0];
+        } else {
+            return null;
+        }
+    } else {
+        return $data;
+    }
+}
+
+function getListStatusHome($id = 0, $type = '')
+{
+    $data = [
+        [
+            'id'               => 1,
+            'name'             => 'Chờ duyệt',
+            'color'            => '#92400e',
+            'background_color' => '#fef3c7',
+            'border_color'     => '#fde68a',
+            'badge_class'      => 'bg-amber-50 text-amber-700 border-amber-300',
+            'status'           => 1,
+            'order'            => 1
+        ],
+        [
+            'id'               => 2,
+            'name'             => 'Đã duyệt',
+            'color'            => '#065f46',
+            'background_color' => '#d1fae5',
+            'border_color'     => '#6ee7b7',
+            'badge_class'      => 'bg-emerald-50 text-emerald-700 border-emerald-300',
+            'status'           => 1,
+            'order'            => 2
+        ],
+        [
+            'id'               => 3,
+            'name'             => 'Từ chối',
+            'color'            => '#991b1b',
+            'background_color' => '#fee2e2',
+            'border_color'     => '#fca5a5',
+            'badge_class'      => 'bg-red-50 text-red-700 border-red-300',
+            'status'           => 1,
+            'order'            => 3
+        ],
+        [
+            'id'               => 4,
+            'name'             => 'Tạm ngưng',
+            'color'            => '#374151',
+            'background_color' => '#f3f4f6',
+            'border_color'     => '#d1d5db',
+            'badge_class'      => 'bg-slate-100 text-slate-600 border-slate-300',
+            'status'           => 1,
+            'order'            => 4
+        ],
+        [
+            'id'               => 5,
+            'name'             => 'Lưu nháp',
+            'color'            => '#585e69ff',
+            'background_color' => '#f3f4f6',
+            'border_color'     => '#d1d5db',
+            'badge_class'      => 'bg-slate-100 text-slate-600 border-slate-300',
+            'status'           => 1,
+            'order'            => 0 
+        ],
+        [
+            'id'               => 6,
+            'name'             => 'Hết hạn',
+            'color'            => '#991b1b',
+            'background_color' => '#fee2e2',
+            'border_color'     => '#fca5a5',
+            'badge_class'      => 'bg-red-50 text-red-700 border-red-300',
+            'status'           => 0,
+            'order'            => 5
+        ],
+    ];
+    if (!empty($id)) {
+        $data = array_filter($data, function ($item) use ($id) {
+            return $item['id'] == $id;
+        });
+        if (!empty($data)) {
+            $data = array_values($data);
+            if (!empty($type)) {
+                return $data[0][$type];
+            }
+            return $data[0];
+        } else {
+            return null;
+        }
+    } else {
+        return $data;
+    }
+}
+
+if (!function_exists('track_home_view')) {
+    function track_home_view($home_id, $customer_id, $source = 'app')
+    {
+        if (empty($customer_id) || empty($home_id)) {
+            return [
+                'result' => false,
+                'message' => 'Thông tin không hợp lệ'
+            ];
+        }
+
+        // Kiểm tra BĐS tồn tại
+        $home = DB::table('tbl_home')->where('id', $home_id)->first();
+        if (empty($home)) {
+            return [
+                'result' => false,
+                'message' => 'Bất động sản không tồn tại'
+            ];
+        }
+
+        // Chống spam: kiểm tra nếu client này đã xem BĐS này trong vòng 5 phút gần nhất thì không ghi thêm
+        $recentView = DB::table('tbl_home_views')
+            ->where('home_id', $home_id)
+            ->where('id_client', $customer_id)
+            ->where('viewed_at', '>=', now()->subMinutes(5))
+            ->first();
+
+        if (!empty($recentView)) {
+            return [
+                'result' => true,
+                'message' => 'Đã ghi nhận lượt xem trước đó'
+            ];
+        }
+
+        DB::table('tbl_home_views')->insert([
+            'home_id' => $home_id,
+            'id_client' => $customer_id,
+            'source' => $source,
+            'viewed_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return [
+            'result' => true,
+            'message' => 'Ghi nhận lượt xem thành công'
+        ];
+    }
 }
 

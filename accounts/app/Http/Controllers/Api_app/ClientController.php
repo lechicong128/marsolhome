@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 //use App\Services\AresService;
 use Yajra\DataTables\CollectionDataTable;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\CustomerResources;
 
 class ClientController extends AuthController
 {
@@ -484,14 +485,8 @@ class ClientController extends AuthController
         $search = $this->request->input('search') ?? null;
         $limit = $this->request->input('limit') ?? 50;
         $id = $this->request->input('customer_id') ?? [];
-        $query = Clients::with(['customer_class' => function ($query) {
-            $query->select('id', 'customer_id', 'setting_customer_class_id', 'percent');
-            $query->with([
-                'setting_customer_class' => function ($qr) {
-                    $qr->select('id', 'name');
-                }
-            ]);
-        }])->select('id', 'fullname', 'phone', 'avatar', 'email', 'code_introduce')
+        $filter_home = $this->request->input('filter_home') ?? 0;
+        $query = Clients::select('id', 'fullname', 'phone', 'avatar', 'email', 'type_client', 'created_at')
             ->where('active', 1)
             ->where('id', '!=', 0);
         if (!empty($search)) {
@@ -503,15 +498,36 @@ class ClientController extends AuthController
         if (!empty($id)) {
             $query->whereIn('id', $id);
         }
-        $data = $query->limit($limit)->get();
-        if (!empty($data)) {
-            foreach ($data as $key => $value) {
-                $dtImage = !empty($value->avatar) ? $this->baseUrl . '/' . $value->avatar : null;
-                $data[$key]['avatar'] = $dtImage;
-            }
+        if(!empty($filter_home)){
+            $query->whereIn('type_client', [1,2]);
         }
+        $data = $query->limit($limit)->get();
+
+        // Batch fetch total homes from admin service to avoid N+1 queries
+        $customerIds = $data->pluck('id')->toArray();
+        $homeCounts = [];
+        $transactionCounts = [];
+        if (!empty($customerIds)) {
+            $response = $this->AdminService->countHomes($customerIds);
+            if (isset($response['result']) && $response['result']) {
+                $homeCounts = $response['data'];
+            }
+
+            $transactionCounts = DB::table('tbl_transaction')
+                ->select('customer_id', DB::raw('count(*) as total'))
+                ->whereIn('customer_id', $customerIds)
+                ->groupBy('customer_id')
+                ->pluck('total', 'customer_id')
+                ->toArray();
+        }
+
+        foreach ($data as $item) {
+            $item->total_homes = $homeCounts[$item->id] ?? 0;
+            $item->total_transactions = $transactionCounts[$item->id] ?? 0;
+        }
+
         return response()->json([
-            'data' => $data,
+            'data' => CustomerResources::collection($data),
             'result' => true,
             'message' => 'Lấy danh sách thành công'
         ]);

@@ -32,10 +32,10 @@ function _table_jump_to_page(table, oSettings) {
 
 function get_datatable_buttons_new(e) {
     var n = {
-            body: function (e, t, a, n) {
-                var i = $("<div></div>", e);
-                if (
-                    (i.append(e),
+        body: function (e, t, a, n) {
+            var i = $("<div></div>", e);
+            if (
+                (i.append(e),
                     i.find("[data-note-edit-textarea]").length > 0 &&
                     (i.find("[data-note-edit-textarea]").remove(),
                         (e = i.html().trim())),
@@ -45,25 +45,25 @@ function get_datatable_buttons_new(e) {
                     i.find(".table-export-exclude").length > 0 &&
                     (i.find(".table-export-exclude").remove(),
                         (e = i.html().trim())),
-                        e)
-                ) {
-                    var o = new RegExp(
-                        "([0-9]{1,3})(,)([0-9]{" +
-                        app.options.decimal_places +
-                        "," +
-                        app.options.decimal_places +
-                        "})",
-                        "gm"
-                    );
-                    e.matchAll(o) && (e = e.replace(o, "$1.$3"));
-                }
-                var r = document.createElement("div");
-                return (
-                    (r.innerHTML = e),
-                        (r.textContent || r.innerText || "").trim()
+                    e)
+            ) {
+                var o = new RegExp(
+                    "([0-9]{1,3})(,)([0-9]{" +
+                    app.options.decimal_places +
+                    "," +
+                    app.options.decimal_places +
+                    "})",
+                    "gm"
                 );
-            },
+                e.matchAll(o) && (e = e.replace(o, "$1.$3"));
+            }
+            var r = document.createElement("div");
+            return (
+                (r.innerHTML = e),
+                (r.textContent || r.innerText || "").trim()
+            );
         },
+    },
         o = [];
 
     var r = $("body").find(".table-btn");
@@ -71,15 +71,15 @@ function get_datatable_buttons_new(e) {
         $.each(r, function () {
             var t = $(this);
             t.length &&
-            t.attr("data-table") &&
-            $(e).is(t.attr("data-table")) &&
-            o.push({
-                text: t.text().trim(),
-                className: "btn btn-default-dt-options",
-                action: function (e, a, n, i) {
-                    t.click();
-                },
-            });
+                t.attr("data-table") &&
+                $(e).is(t.attr("data-table")) &&
+                o.push({
+                    text: t.text().trim(),
+                    className: "btn btn-default-dt-options",
+                    action: function (e, a, n, i) {
+                        t.click();
+                    },
+                });
         }),
         $(e).hasClass("dt-inline") ||
         o.push({
@@ -89,11 +89,11 @@ function get_datatable_buttons_new(e) {
                 t.ajax.reload();
             },
         }),
-            o
+        o
     );
 }
 
-function InitDataTable(selector, url, initParams, notsearchable = [0], notsortable = [0], fnserverparams = [], defaultorder = [0], fixedColumns = {leftColumns: 0, rightColumns: 0}) {
+function InitDataTable(selector, url, initParams, notsearchable = [0], notsortable = [0], fnserverparams = [], defaultorder = [0], fixedColumns = { leftColumns: 0, rightColumns: 0 }) {
     // var table = typeof (selector) == 'string' ? $("body").find('table' + selector) : selector;
     table = $(selector);
     if (table.length === 0) {
@@ -330,7 +330,7 @@ function InitDataTable(selector, url, initParams, notsearchable = [0], notsortab
     return tableApi;
 }
 
-function InitDataTableNew(selector, url, initParams, notsearchable = [0], notsortable = [0], fnserverparams = [], defaultorder = [0], fixedColumns = {leftColumns: 0, rightColumns: 0}) {
+function InitDataTableNew(selector, url, initParams, notsearchable = [0], notsortable = [0], fnserverparams = [], defaultorder = [0], fixedColumns = { leftColumns: 0, rightColumns: 0 }) {
     table = $(selector);
     if (table.length === 0) {
         return false;
@@ -568,7 +568,7 @@ function InitDataTableNew(selector, url, initParams, notsearchable = [0], notsor
 
 function get_datatable_buttons(table) {
     var formatExport = {
-        body: function(data, row, column, node) {
+        body: function (data, row, column, node) {
 
             // Fix for notes inline datatables
             // Causing issues because of the hidden textarea for edit and the content is duplicating
@@ -610,7 +610,7 @@ function get_datatable_buttons(table) {
     };
     var table_buttons_options = [];
 
-    if (typeof(table_export_button_is_hidden) != 'function' || !table_export_button_is_hidden()) {
+    if (typeof (table_export_button_is_hidden) != 'function' || !table_export_button_is_hidden()) {
         table_buttons_options.push({
             extend: 'collection',
             text: lang.dt_button_export,
@@ -621,7 +621,7 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function(index) {
+                    rows: function (index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
@@ -632,7 +632,7 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function(index) {
+                    rows: function (index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
@@ -643,13 +643,13 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function(index) {
+                    rows: function (index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
                 },
                 orientation: 'landscape',
-                customize: function(doc) {
+                customize: function (doc) {
                     // Fix for column widths
                     var table_api = $(table).DataTable();
                     var columns = table_api.columns().visible();
@@ -662,7 +662,7 @@ function get_datatable_buttons(table) {
                             total_visible_columns++;
                         }
                     }
-                    setTimeout(function() {
+                    setTimeout(function () {
                         if (total_visible_columns <= 5) {
                             for (i = 0; i < total_visible_columns; i++) {
                                 pdf_widths.push((735 / total_visible_columns));
@@ -682,7 +682,7 @@ function get_datatable_buttons(table) {
                 footer: true,
                 exportOptions: {
                     columns: [':not(.not-export)'],
-                    rows: function(index) {
+                    rows: function (index) {
                         return _dt_maybe_export_only_selected_rows(index, table);
                     },
                     format: formatExport,
@@ -692,14 +692,14 @@ function get_datatable_buttons(table) {
     }
     var tableButtons = $("body").find('.table-btn');
 
-    $.each(tableButtons, function() {
+    $.each(tableButtons, function () {
         var b = $(this);
         if (b.length && b.attr('data-table')) {
             if ($(table).is(b.attr('data-table'))) {
                 table_buttons_options.push({
                     text: b.text().trim(),
                     className: 'btn btn-default-dt-options',
-                    action: function(e, dt, node, config) {
+                    action: function (e, dt, node, config) {
                         b.click();
                     }
                 });
@@ -711,7 +711,7 @@ function get_datatable_buttons(table) {
         table_buttons_options.push({
             text: '<i class="fa fa-refresh"></i>',
             className: 'btn btn-default-dt-options btn-dt-reload',
-            action: function(e, dt, node, config) {
+            action: function (e, dt, node, config) {
                 dt.ajax.reload();
             }
         });
@@ -727,7 +727,7 @@ function _dt_maybe_export_only_selected_rows(index, table) {
     if (bulkActionsCheckbox && bulkActionsCheckbox.length > 0) {
         var rows = table.find('tbody tr');
         var anyChecked = false;
-        $.each(rows, function() {
+        $.each(rows, function () {
             if ($(this).find('td:first input[type="checkbox"]:checked').length) {
                 anyChecked = true;
             }
@@ -814,7 +814,7 @@ function dtDatatable(selector, initParams) {
     return oTableCustom;
 }
 
-function initDatepicker(){
+function initDatepicker() {
     $('.datepicker').datepicker({
         timePicker: true,
         autoclose: true,
@@ -828,7 +828,7 @@ function initDatepicker(){
         timePicker: true,
         autoclose: true,
         timePickerIncrement: 30,
-        format:'d/m/Y H:i',
+        format: 'd/m/Y H:i',
     });
 }
 
@@ -840,12 +840,12 @@ var search_daterangepicker = (element) => {
         cancelClass: 'btn-white',
         autoUpdateInput: false,
         isInvalidDate: false,
-    }, function(start, end, label) {});
-    $(`input[name="${element}"]`).on('apply.daterangepicker', function(ev, picker) {
+    }, function (start, end, label) { });
+    $(`input[name="${element}"]`).on('apply.daterangepicker', function (ev, picker) {
         $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
         $(`#${element}`).trigger("change");
     });
-    $(`input[name="${element}"]`).on('cancel.daterangepicker', function(ev, picker) {
+    $(`input[name="${element}"]`).on('cancel.daterangepicker', function (ev, picker) {
         $(this).val('');
         $(`#${element}`).trigger("change");
     });
@@ -859,12 +859,12 @@ var search_daterangetimepicker = (element) => {
         autoUpdateInput: false,
         isInvalidDate: false,
         timePicker: true,
-    }, function(start, end, label) {});
-    $(`input[name="${element}"]`).on('apply.daterangepicker', function(ev, picker) {
+    }, function (start, end, label) { });
+    $(`input[name="${element}"]`).on('apply.daterangepicker', function (ev, picker) {
         $(this).val(picker.startDate.format('DD/MM/YYYY h:mm A') + ' - ' + picker.endDate.format('DD/MM/YYYY h:mm A'));
         $(`#${element}`).trigger("change");
     });
-    $(`input[name="${element}"]`).on('cancel.daterangepicker', function(ev, picker) {
+    $(`input[name="${element}"]`).on('cancel.daterangepicker', function (ev, picker) {
         $(this).val('');
         $(`#${element}`).trigger("change");
     });
@@ -872,7 +872,7 @@ var search_daterangetimepicker = (element) => {
 $(document).on('show.bs.modal', '.modal', function () {
     $("body").addClass('modal-open');
 });
-$("body").on("hidden.bs.modal", '.modal', function(event) {
+$("body").on("hidden.bs.modal", '.modal', function (event) {
     $('.modal:visible').length && $(document.body).addClass('modal-open');
     $(this).data('bs.modal', null);
 });
@@ -906,7 +906,7 @@ $(document).on('click', '.dt-modal', function (event) {
         .fail(function () {
             console.log("error");
         });
-    $('#dtModal').modal({backdrop: 'static', keyboard: true});
+    $('#dtModal').modal({ backdrop: 'static', keyboard: true });
 });
 $(document).on('click', '.dt-modal2', function (event) {
     event.preventDefault();
@@ -930,27 +930,27 @@ $(document).on('click', '.dt-modal2', function (event) {
         .fail(function () {
             console.log("error");
         });
-    $('#dtModal2').modal({backdrop: 'static', keyboard: true});
+    $('#dtModal2').modal({ backdrop: 'static', keyboard: true });
 });
 
 row_popover = '';
-$(document).on('click', '.po', function() {
+$(document).on('click', '.po', function () {
     row_popover = $(this).closest('div');
 });
 
-$(document).on('click', '.po-delete', function() {
+$(document).on('click', '.po-delete', function () {
     $(this).popover('show');
 });
-$(document).on('click', '.po-close', function() {
+$(document).on('click', '.po-close', function () {
     $('.po-delete').popover('hide');
     return false;
 });
-$(document).on('click', '.po-close', function(e) {
+$(document).on('click', '.po-close', function (e) {
     $('.popover').popover('hide');
 });
 
 
-$(document).on('click', '.dt-delete', function(e) {
+$(document).on('click', '.dt-delete', function (e) {
     var row = $(this).closest('tr');
     e.preventDefault();
     $('.po-delete').popover('hide');
@@ -966,9 +966,8 @@ $(document).on('click', '.dt-delete', function(e) {
         dataType: 'JSON',
         data: {},
     })
-        .done(function(data) {
-            if (data)
-            {
+        .done(function (data) {
+            if (data) {
                 if (data.result) {
                     if (typeof oTable != 'undefined') {
                         oTable.draw('page');
@@ -976,18 +975,18 @@ $(document).on('click', '.dt-delete', function(e) {
                     if (typeof oTablePayment != 'undefined') {
                         oTablePayment.draw('page');
                     }
-                    alert_float('success',data.message);
+                    alert_float('success', data.message);
                 } else {
-                    alert_float('error',data.message);
+                    alert_float('error', data.message);
                 }
             }
         })
-        .fail(function() {
+        .fail(function () {
         })
     return false;
 });
 
-$(document).on('change', '.dt-active', function(e) {
+$(document).on('change', '.dt-active', function (e) {
     e.preventDefault();
     var link = $(this).attr('data-href');
     var status = $(this).attr('data-status');
@@ -1001,31 +1000,30 @@ $(document).on('change', '.dt-active', function(e) {
         type: 'GET',
         dataType: 'JSON',
         data: {
-            status:status
+            status: status
         },
     })
-        .done(function(data) {
-            if (data)
-            {
+        .done(function (data) {
+            if (data) {
                 if (data.result) {
-                    alert_float('success',data.message);
+                    alert_float('success', data.message);
                 } else {
-                    alert_float('error',data.message);
+                    alert_float('error', data.message);
                 }
                 if (typeof oTable != 'undefined') {
                     oTable.draw('page');
                 }
-                if (typeof loadDataSetup != 'undefined'){
+                if (typeof loadDataSetup != 'undefined') {
                     loadDataSetup();
                 }
             }
         })
-        .fail(function() {
+        .fail(function () {
         })
     return false;
 });
 
-$(document).on('click', '.dt-update', function(e) {
+$(document).on('click', '.dt-update', function (e) {
     var row = $(this).closest('tr');
     e.preventDefault();
     var link = $(this).attr('href');
@@ -1092,7 +1090,7 @@ $(document).on('click', '.dt-update', function(e) {
     return false;
 });
 
-function alert_float(type = 'success',message = ''){
+function alert_float(type = 'success', message = '') {
     $("#toast-container-new").show();
     var html = `<div class="toast toast-${type}" style="">
         <div class="toast-message">${message}</div>
@@ -1105,10 +1103,10 @@ function alert_float(type = 'success',message = ''){
 }
 
 
-$("#toast-container-new").click(function (){
+$("#toast-container-new").click(function () {
     $(this).hide();
 })
-function searchAjaxSelect2(element,url = '',id = 0,paramsCus = {},allowClear = true){
+function searchAjaxSelect2(element, url = '', id = 0, paramsCus = {}, allowClear = true) {
     $(element).select2({
         allowClear: allowClear,
         dropdownParent: $(element).parent(),
@@ -1154,7 +1152,7 @@ function searchAjaxSelect2Img(element, url = '', id = 0, paramsCus = {}, allowCl
     $el.select2({
         allowClear: allowClear,
         dropdownParent: $el.parent(),
-        data : items,
+        data: items,
         ajax: url ? {
             url: url.replace(/\/$/, '') + '/' + id,
             dataType: 'json',
@@ -1181,23 +1179,23 @@ function searchAjaxSelect2Img(element, url = '', id = 0, paramsCus = {}, allowCl
 
 function formatRepo(repo) {
     textReturn = '';
-    if(repo.image) {
+    if (repo.image) {
         textReturn += '<img class="img_option" src="' + repo.image + '"/> ';
     }
     textReturn += repo.full_name || repo.text || repo.name;
-    if(repo.grand_total) {
-        textReturn += ' - ' + formatMoney(repo.grand_total)+' VNĐ';
+    if (repo.grand_total) {
+        textReturn += ' - ' + formatMoney(repo.grand_total) + ' VNĐ';
     }
     return textReturn;
 }
-function formatRepoSelection (repo) {
+function formatRepoSelection(repo) {
     textReturn = '';
-    if(repo.image) {
+    if (repo.image) {
         textReturn += '<img class="img_option" src="' + repo.image + '"/> ';
     }
     textReturn += repo.full_name || repo.text || repo.name;
-    if(repo.grand_total) {
-        textReturn += ' - ' + formatMoney(repo.grand_total)+' VNĐ';
+    if (repo.grand_total) {
+        textReturn += ' - ' + formatMoney(repo.grand_total) + ' VNĐ';
     }
     return textReturn;
 }
@@ -1240,14 +1238,14 @@ function mainWrapperHeightFix() {
     $(".table-responsive").css("min-height", $(window).height() - 200 - headerH + 'px');
 }
 
-$(document).ajaxStart(function() {
+$(document).ajaxStart(function () {
     $('#loading').addClass('loading');
     $(".loading_img").removeClass('hide');
     // $(".loading_img").attr('src','admin/assets/images/loading.gif');
     // $('#loading-content').addClass('loading-content');
 });
 
-$(document).ajaxStop(function() {
+$(document).ajaxStop(function () {
     $('#loading').removeClass('loading');
     $(".loading_img").addClass('hide');
     // $(".loading_img").removeAttr('src');
@@ -1258,7 +1256,7 @@ $(document).ajaxStop(function() {
 $(".delete_image").click(function () {
     $(this).closest("div.show_image").remove();
 });
-function initRangeSlider(ele,min,max,value = 0,step = 0){
+function initRangeSlider(ele, min, max, value = 0, step = 0) {
     $(`${ele}`).ionRangeSlider({
         min: min,
         max: max,
@@ -1267,7 +1265,7 @@ function initRangeSlider(ele,min,max,value = 0,step = 0){
     })
 }
 function formatMoney(x, d = 0) {
-    if(!d) { d = options.decimals_money; }
+    if (!d) { d = options.decimals_money; }
     x = x * 1;
     if (x % 1 == 0) {
         d = 0;
@@ -1276,7 +1274,7 @@ function formatMoney(x, d = 0) {
 }
 function formatNumber(x, d = null) {
     // if(!d) { d = site.decimals_number; }
-    if(d == null) { d = options.decimals_number; }
+    if (d == null) { d = options.decimals_number; }
     x = x * 1;
     if (x % 1 == 0) {
         d = 0;
@@ -1323,7 +1321,7 @@ function formatNumberOld(nStr, decSeperate = ".", groupSeperate = ",") {
     }
     // console.log(x1);
     x1 = x1.split('.');
-    if(x1[1]) {
+    if (x1[1]) {
         x1[1] = x1[1].replace(/[\$,]/g, '');
         x1 = x1[0] + '.' + x1[1];
     }
@@ -1351,18 +1349,18 @@ var intVal = function (i) {
 
 function addTitleRequired() {
     var input_required = $('input[required],select[required]');
-    $.each(input_required, function(index, value) {
+    $.each(input_required, function (index, value) {
         var idInput = $(value).attr('id');
-        if(idInput && $(`label[for="${idInput}"]`).find('i').length == 0) {
+        if (idInput && $(`label[for="${idInput}"]`).find('i').length == 0) {
             $(`label[for="${$(value).attr('id')}"]`).append(` <i class="text-danger required">*</i>`);
         }
     })
 }
-$(document).ready(function() {
+$(document).ready(function () {
     addTitleRequired();
 })
 
-$(document).on('click', '.slick-slide', function() {
+$(document).on('click', '.slick-slide', function () {
     $(this).parents().find('.slick-slide').removeClass('active-menu');
     $(this).addClass('active-menu');
 })
@@ -1371,7 +1369,7 @@ $(document).on('click.bs.dropdown.data-api', '.dropdown.keep-inside-clicks-open'
 });
 
 var $ddlBtn = $(".clickNoti");
-$ddlBtn.on("click", function(){
+$ddlBtn.on("click", function () {
     var expanded = /true/i.test($ddlBtn.attr("aria-expanded"));
     $ddlBtn
         .attr("aria-expanded", !expanded)
@@ -1382,7 +1380,7 @@ $ddlBtn.on("click", function(){
         .parent().toggleClass("open");
 });
 
-$(".has-submenu").click(function (){
+$(".has-submenu").click(function () {
     if ($(window).width() <= 768) {
         if ($(this).find('ul.submenu')) {
             $(this).find('ul.submenu').addClass('show');
@@ -1467,7 +1465,7 @@ function searchAjaxSelect2Mutil(element, url = '', id = 0, paramsCus = {}, allow
 
             // 4) Bỏ “Chọn tất cả” khỏi selection nếu nó xuất hiện
             // (do select2 có thể tạm add vào selection)
-            const cleaned = ( $el.val() || [] ).filter(v => v !== SELECT_ALL_ID);
+            const cleaned = ($el.val() || []).filter(v => v !== SELECT_ALL_ID);
             $el.val(cleaned).trigger('change.select2');
 
             // Giữ dropdown mở để người dùng tiếp tục chọn (tuỳ thích)
@@ -1477,11 +1475,11 @@ function searchAjaxSelect2Mutil(element, url = '', id = 0, paramsCus = {}, allow
 
     // Dọn “Chọn tất cả” khỏi value khi clear all
     $el.off('select2:clear.removeSelectAll').on('select2:clear.removeSelectAll', function () {
-        const cleaned = ( $el.val() || [] ).filter(v => v !== SELECT_ALL_ID);
+        const cleaned = ($el.val() || []).filter(v => v !== SELECT_ALL_ID);
         $el.val(cleaned).trigger('change.select2');
     });
 }
-$(document).ajaxError(function(event, xhr) {
+$(document).ajaxError(function (event, xhr) {
     let res = {};
     try {
         res = xhr.responseJSON || JSON.parse(xhr.responseText);
@@ -1491,7 +1489,7 @@ $(document).ajaxError(function(event, xhr) {
     if (xhr.status === 403) {
         alert_float(res.status || 'error', res.message || 'Bạn không có quyền thực hiện hành động này');
 
-        setTimeout(function() {
+        setTimeout(function () {
             window.location.href = res.redirect || '/admin/dashboard';
         }, 100);
     }

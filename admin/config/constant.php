@@ -131,6 +131,6 @@ return [
     'payment_mode_bank' => 1,
     'cancel_review_guest' => 7,// hủy đăng ký dùng thử
     'success_review_guest' => 6,// hoàn thành đăng ký dùng thử
-    'template_id_otp' => 538989,// template OTP
-    'token_default' => 'nglow',
+    'template_id_otp' => 1,// template OTP
+    'token_default' => 'ai_group',
 ];

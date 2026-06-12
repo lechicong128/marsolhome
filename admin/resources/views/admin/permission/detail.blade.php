@@ -1,56 +1,56 @@
 <form action="admin/permission/submit/{{$id}}" method="post" id="FormPermission" data-parsley-validate
       novalidate>
     {{csrf_field()}}
-    <div class="modal-dialog modal-lg" id="modal_permission">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{{$title}}</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <input type="hidden" name="id" value="{{!empty($permission) ? $permission['id'] : 0}}" >
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="name">{{lang('dt_name_permission')}}</label>
-                                <select class="form-control name" name="name" id="name"
-                                        style="width: 100%;height: 35px">
-                                    <option value=""></option>
-                                    @foreach(Config::get('permission')['permissions'] as $key => $value)
-                                        <option
-                                            {{!empty($permission) && $permission->name == $value['id'] ? 'selected': ''}} value="{{$value['id']}}">{{lang($value['name'])}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{{ $title }}</h2>
+                <button type="button" class="close" data-dismiss="modal" title="Đóng">
+                    <!-- Sử dụng SVG cho nút Close sắc nét -->
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13 1L1 13M1 1L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" name="id" value="{{!empty($permission) ? $permission['id'] : 0}}" >
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">{{lang('dt_name_permission')}}</label>
+                            <select class="form-control name" name="name" id="name"
+                                    style="width: 100%;height: 35px">
+                                <option value=""></option>
+                                @foreach(Config::get('permission')['permissions'] as $key => $value)
+                                    <option
+                                        {{!empty($permission) && $permission->name == $value['id'] ? 'selected': ''}} value="{{$value['id']}}">{{lang($value['name'])}}</option>
+                                @endforeach
+                            </select>
                         </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="group_permission_id">{{lang('dt_group_permission')}}</label>
-                                <select class="group_permission_id form-control" name="group_permission_id" id="group_permission_id"
-                                        style="width: 100%;height: 35px">
-                                    <option value=""></option>
-                                    @foreach($groupPermission as $key => $value)
-                                        <option
-                                            {{!empty($permission) && $permission->group_permission_id == $value->id ? 'selected': ''}} value="{{$value->id}}">{{$value->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="group_permission_id">{{lang('dt_group_permission')}}</label>
+                            <select class="group_permission_id form-control" name="group_permission_id" id="group_permission_id"
+                                    style="width: 100%;height: 35px">
+                                <option value=""></option>
+                                @foreach($groupPermission as $key => $value)
+                                    <option
+                                        {{!empty($permission) && $permission->group_permission_id == $value->id ? 'selected': ''}} value="{{$value->id}}">{{$value->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-default waves-effect waves-light"
-                            type="submit">{{lang('dt_save')}}</button>
-                    <button type="button" class="btn btn-primary"
-                            data-dismiss="modal">{{lang('dt_close')}}</button>
+                    <button class="btn btn-default" id="saveBtn">Lưu Lại</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy bỏ</button>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
 <script>
     $("#FormPermission").validate({
         rules: {
@@ -84,7 +84,7 @@
                 .done(function (data) {
                     if (data.result) {
                         oTable.draw();
-                        $('.modal-dialog .close').trigger('click');
+                        $('.modal-overlay .close').trigger('click');
                         alert_float('success',data.message);
                     } else {
                         $(".show_error").html(data.message);

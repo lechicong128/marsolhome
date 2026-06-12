@@ -22,8 +22,14 @@ use App\Http\Controllers\Api_app\SpaController;
 use App\Http\Controllers\Api_app\BranchController;
 use App\Http\Controllers\Api_app\VideoController;
 use App\Http\Controllers\Api_app\BuyTreatmentController;
-
-
+use App\Http\Controllers\Api_app\HomeController;
+use App\Http\Controllers\Api_app\BlogController;
+use App\Http\Controllers\Api_app\ApiSearchHome;
+use App\Http\Controllers\Api_app\ApplicationCommentsController;
+use App\Http\Controllers\Api_app\PlandofficeController;
+use App\Http\Controllers\Api_app\PlanningController;
+use App\Http\Controllers\Api_app\ApiVewHome;
+use App\Http\Controllers\Api_app\FeaturedLocationController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,11 +48,13 @@ Route::get('insertCronjobEmail/{ref?}', [CronjobEmailController::class, 'insertC
 Route::get('getOrderRef/{ref?}', [OrderRefController::class, 'getOrderRef']);
 Route::get('updateOrderRef/{ref?}', [OrderRefController::class, 'updateOrderRef']);
 Route::get('get_referral_program', [Api_info::class, 'get_referral_program']);
+Route::get('getvideodemo', [Api_info::class, 'getvideodemo']);
 Route::get('get_haru_wallet', [Api_info::class, 'get_haru_wallet']);
 Route::get('getInfoContact', [Api_info::class, 'getInfoContact']);
 Route::get('getInfoBannerEvent', [Api_info::class, 'getInfoBannerEvent']);
 Route::get('get_version_app', [Api_info::class, 'get_version_app']);
 Route::get('get_info', [Api_info::class, 'get_info']);
+Route::get('get_settingwebs', [Api_info::class, 'get_settingwebs']);
 Route::get('how_to_join', [Api_info::class, 'how_to_join']);
 Route::get('getOption/{ref?}', [Api_info::class, 'getOption']);
 Route::get('get_code_leader/{ref?}', [Api_info::class, 'get_code_leader']);
@@ -195,6 +203,10 @@ Route::group(['prefix' => 'category'], function () {
     Route::get('getListNoteCancel', [CategoryController::class, 'getListNoteCancel']);
     Route::get('getListNoteAffiliate', [CategoryController::class, 'getListNoteAffiliate']);
     Route::get('getListNoteHaruWallet', [CategoryController::class, 'getListNoteHaruWallet']);
+    Route::get('searchPropertyType', [CategoryController::class, 'searchPropertyType']);
+    Route::get('getListProvince', [CategoryController::class, 'getListProvince']);
+    Route::get('getListWard', [CategoryController::class, 'getListWard']);
+    Route::get('getListUtilitiesFilter', [CategoryController::class, 'getListUtilitiesFilter']);
 });
 
 Route::group(['prefix' => 'script'], function () {
@@ -239,3 +251,70 @@ Route::group(['prefix' => 'report_violation'], function () {
 
 Route::get('test', [ScriptController::class, 'addNotiMutil']);
 
+Route::group(['prefix' => 'home'], function () {
+    Route::get('getListHome', [HomeController::class, 'getListHome'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('getListHomeAll', [HomeController::class, 'getListHomeAll'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('getDetail/{id}', [HomeController::class, 'getDetail'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('getRelatedData/{id}', [HomeController::class, 'getRelatedData'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('countHomes', [HomeController::class, 'countHomes']);
+    Route::post('detail', [HomeController::class, 'detail'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('changeFavouriteHome', [HomeController::class, 'changeFavouriteHome'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('changeSaveHome', [HomeController::class, 'changeSaveHome'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+
+    Route::post('comment', [HomeController::class, 'comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('edit_comment/{id}', [HomeController::class, 'edit_comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('list_comment', [HomeController::class, 'list_comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('like_comment/{id}/{like}', [HomeController::class, 'like_comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('dislike_comment/{id}/{dislike}', [HomeController::class, 'dislike_comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('delete_comment/{id}', [HomeController::class, 'delete_comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('report_comment', [HomeController::class, 'report_comment'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+
+    Route::post('add_review', [HomeController::class, 'add_review'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('edit_review/{id}', [HomeController::class, 'edit_review'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('delete_review/{id}', [HomeController::class, 'delete_review'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('list_review', [HomeController::class, 'list_review'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('get_review_stats', [HomeController::class, 'get_review_stats']);
+
+    Route::get('getListUtilities', [HomeController::class, 'getListUtilities']);
+    Route::get('checkHome', [HomeController::class, 'checkHome'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('extendHome', [HomeController::class, 'extendHome'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('checkEditHome', [HomeController::class, 'checkEditHome'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+});
+
+Route::group(['prefix' => 'blog'], function () {
+    Route::get('getListBlog', [BlogController::class, 'getListBlog']);
+    Route::get('getListBlogNext', [BlogController::class, 'getListBlogNext']);
+    Route::get('getDetail/{id}', [BlogController::class, 'getDetail']);
+    Route::get('getListBlogHomePage', [BlogController::class, 'getListBlogHomePage']);
+});
+Route::group(['prefix' => 'searchhome'], function () {
+    Route::get('getListSearch', [ApiSearchHome::class, 'GetListSearch']);
+    Route::get('getListSearchHome', [ApiSearchHome::class, 'GetListSearchHome']);
+    Route::get('getListHome', [ApiSearchHome::class, 'getListHome'])->middleware(App\Http\Middleware\CheckLoginApi::class);
+    Route::get('GetListHistorySearch', [ApiSearchHome::class, 'GetListHistorySearch'])->middleware(App\Http\Middleware\CheckLoginApi::class);
+});
+
+Route::group(['prefix' => 'application_comments', 'middleware' => App\Http\Middleware\CheckLoginApi::class], function () {
+    Route::post('submit', [ApplicationCommentsController::class, 'submit']);
+    Route::get('listappcomment', [ApplicationCommentsController::class, 'listappcomment']);
+});
+
+Route::group(['prefix' => 'plandoffice'], function () {
+    Route::get('get-nearby-parcels', [PlandofficeController::class, 'getNearbyParcels']);
+    Route::get('get-info-parcels/{id?}', [PlandofficeController::class, 'GetInfoParcels']);
+});
+
+Route::get('kmz/{filename}', [PlanningController::class, 'processKmz']);
+
+Route::group(['prefix' => 'plannings'], function () {
+    Route::get('getList', [PlanningController::class, 'getList']);
+    Route::get('getDetail/{id?}', [PlanningController::class, 'getDetail']);
+});
+
+Route::group(['prefix' => 'viewhome'], function () {
+    Route::get('getListViewers/{home_id}', [ApiVewHome::class, 'getListViewers'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::post('trackView', [ApiVewHome::class, 'trackView'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+    Route::get('getListViewedByClient', [ApiVewHome::class, 'getListViewedByClient'])->middleware('App\Http\Middleware\CheckLoginApi::class');
+});
+Route::get('featured-locations', [FeaturedLocationController::class, 'getList']);
+Route::get('get_info_home', [Api_info::class, 'get_info_home']);

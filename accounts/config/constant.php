@@ -6,7 +6,7 @@ return [
     'status_approve' => 1,
     'status_finish' => 2,
     'status_payment' => 4,
-    'token_default' => 'nglow',
+    'token_default' => 'ai_group',
     'lang_default' => 'vi',
     'status_complete' => '1',
     'status_complete_challenge' => '1',

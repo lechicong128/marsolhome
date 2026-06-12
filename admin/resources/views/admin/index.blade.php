@@ -19,22 +19,26 @@
 <div class="dash-stats-grid">
     <div class="dash-stat-card">
         <div class="dash-stat-top">
-            <div class="dash-stat-icon blue"><i class="fa fa-eye"></i></div>
-            <span class="dash-stat-badge info">✦ Hôm nay</span>
+            <div class="dash-stat-icon blue"><i class="fa fa-users"></i></div>
+            <span class="dash-stat-badge info">✦ Thành viên</span>
         </div>
-        <div class="dash-stat-label">Lượt truy cập hôm nay</div>
-        <div class="dash-stat-value"><span class="counter">128</span></div>
-        <div class="dash-stat-trend up"><i class="fa fa-arrow-up"></i> +12% so với hôm qua</div>
+        <div class="dash-stat-body">
+            <div class="dash-stat-label">Tổng số thành viên</div>
+            <div class="dash-stat-value"><span>{{ $totalMembers ?? 0 }}</span></div>
+            <div class="dash-stat-trend up"><i class="fa fa-arrow-up"></i> Hoạt động tích cực</div>
+        </div>
     </div>
 
     <div class="dash-stat-card">
         <div class="dash-stat-top">
-            <div class="dash-stat-icon teal"><i class="fa fa-bar-chart"></i></div>
-            <span class="dash-stat-badge active-badge">✦ Tổng cộng</span>
+            <div class="dash-stat-icon teal"><i class="fa fa-home"></i></div>
+            <span class="dash-stat-badge active-badge">✦ BĐS</span>
         </div>
-        <div class="dash-stat-label">Tổng lượt truy cập</div>
-        <div class="dash-stat-value"><span class="counter">48250</span></div>
-        <div class="dash-stat-trend up"><i class="fa fa-arrow-up"></i> +5.3% tháng này</div>
+        <div class="dash-stat-body">
+            <div class="dash-stat-label">Tổng số bất động sản</div>
+            <div class="dash-stat-value"><span>{{ $totalHomes ?? 0 }}</span></div>
+            <div class="dash-stat-trend up"><i class="fa fa-plus"></i> +{{ $newHomesToday ?? 0 }} mới hôm nay</div>
+        </div>
     </div>
 
     <div class="dash-stat-card">
@@ -42,19 +46,23 @@
             <div class="dash-stat-icon teal"><i class="fa fa-file-text"></i></div>
             <span class="dash-stat-badge up">✦ Đã đăng</span>
         </div>
-        <div class="dash-stat-label">Tổng số bài viết</div>
-        <div class="dash-stat-value"><span class="counter">{{ $totalPosts ?? 0 }}</span></div>
-        <div class="dash-stat-trend neutral"><i class="fa fa-plus"></i> +{{ $newPostsToday ?? 3 }} bài hôm nay</div>
+        <div class="dash-stat-body">
+            <div class="dash-stat-label">Tổng số bài viết</div>
+            <div class="dash-stat-value"><span>{{ $totalPosts ?? 0 }}</span></div>
+            <div class="dash-stat-trend neutral"><i class="fa fa-plus"></i> +{{ $newPostsToday ?? 0 }} bài hôm nay</div>
+        </div>
     </div>
 
     <div class="dash-stat-card">
         <div class="dash-stat-top">
-            <div class="dash-stat-icon orange"><i class="fa fa-envelope"></i></div>
-            <span class="dash-stat-badge warning">✦ Liên hệ</span>
+            <div class="dash-stat-icon orange"><i class="fa fa-comments"></i></div>
+            <span class="dash-stat-badge warning">✦ Góp ý</span>
         </div>
-        <div class="dash-stat-label">Tổng liên hệ</div>
-        <div class="dash-stat-value"><span class="counter">24</span></div>
-        <div class="dash-stat-trend down"><i class="fa fa-circle"></i> 5 chưa đọc</div>
+        <div class="dash-stat-body">
+            <div class="dash-stat-label">Tổng góp ý ứng dụng</div>
+            <div class="dash-stat-value"><span>{{ $totalComments ?? 0 }}</span></div>
+            <div class="dash-stat-trend neutral"><i class="fa fa-plus"></i> +{{ $newCommentsToday ?? 0 }} hôm nay</div>
+        </div>
     </div>
 </div>
 
@@ -85,14 +93,6 @@
             <a href="admin/posts" class="dash-table-link">Xem tất cả</a>
         </div>
         <ul class="dash-post-list">
-            <li class="dash-post-item">
-                <span class="dash-member-rank rank-1">1</span>
-                <div class="dash-post-info">
-                    <div class="dash-post-title">Giới thiệu về PTGrow và sứ mệnh phát triển bền vững</div>
-                    <div class="dash-post-meta"><i class="fa fa-eye"></i> 1,248 lượt xem · <i class="fa fa-calendar"></i> 10/05/2026</div>
-                </div>
-                <span class="dash-post-views">1,248</span>
-            </li>
             <li class="dash-post-item">
                 <span class="dash-member-rank rank-2">2</span>
                 <div class="dash-post-info">
@@ -183,12 +183,7 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        if (typeof $.fn.counterUp !== 'undefined') {
-            $('.counter').counterUp({
-                delay: 100,
-                time: 1200
-            });
-        }
+        // No custom local scripts needed
     });
 </script>
 @endsection

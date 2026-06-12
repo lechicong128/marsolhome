@@ -7,6 +7,7 @@ use App\Http\Resources\Notification as NotificationResource;
 use App\Models\Notification;
 use App\Models\User;
 use App\Traits\SocketTrait;
+use App\Services\AccountService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
@@ -19,10 +20,11 @@ class NotificationController extends AuthController
 
     use SocketTrait;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request,AccountService $accountService)
     {
         parent::__construct($request);
         DB::enableQueryLog();
+        $this->dbAccount = $accountService;
     }
 
     public function getListNotification()
@@ -78,14 +80,34 @@ class NotificationController extends AuthController
             })
             ->orderByRaw('tbl_notification.created_at desc,tbl_notification.id desc')
             ->paginate($per_page, ['*'], '', $current_page);
-        $dataNotification = $dtNotification->items();
-        foreach ($dataNotification as $key => $value) {
-            $LangContent = LangNoti($value->content);
-            $dtNotification->items()[$key]['content'] = $LangContent;
+        
+        $customerIds = $dtNotification
+            ->map(function ($item) {
+                $data = json_decode($item->json_data, true);
+                return $data['customer']['id'] ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+        $dataCustomer = [];
+        if(!empty($customerIds)){
+            $requestCustomer = new Request();
+            $requestCustomer->merge(['list_id' => $customerIds]);
+            $responseCustomer = $this->dbAccount->getListDetailCustomer($requestCustomer);
+            $listDataCustomer = $responseCustomer->getData(true);
+            if ($listDataCustomer['result']) {
+                $dataCustomer = $listDataCustomer['clients'];
+            }
         }
+        $dtNotification->getCollection()->transform(function ($item) use ($dataCustomer) {
+            $data = json_decode($item->json_data, true);
+            $customer = collect($dataCustomer)->where('id', ($data['customer']['id'] ?? 0))->first();
+            $item->customer = $customer ?? null;
+            return $item;
+        });
         return new NotificationCollection($dtNotification);
     }
-
 
     public function CountNotification()
     {
@@ -409,6 +431,9 @@ class NotificationController extends AuthController
         }
         elseif ($type_noti == 'general') {
             Notification::notiGeneralClient($customer_id_new, $dtData, $arr_object_id, $locale);
+        }
+        elseif ($type_noti == 'message') {
+            Notification::notiMessage($customer_id_new, $dtData, $arr_object_id, $locale);
         }
         else {
             $this->sendNotificationSocket([

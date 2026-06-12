@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Cache;
 class Socket
 {
     protected $key = "";
-    protected $env = "live";
+    protected $env = "test";
     protected $baseURL = array(
-        'test' => 'http://192.168.1.178:3005/',
-        'live' => 'https://socketfoso.fmrp.vn/',
+        'test' => 'http://192.168.1.178:3006/',
+        'live' => 'http://103.1.236.30:3006/',
     );
     public $socket_link_connect;
     protected $URI = array(

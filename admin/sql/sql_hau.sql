@@ -1,283 +1,231 @@
--- //27022026
-thêm tbl_category_services
-tbl_services
-tbl_services_images
-CREATE TABLE `tbl_work_shifts` (
-  `id`          INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  `day_of_week` TINYINT NOT NULL COMMENT '0=Sunday, 1=Monday, ..., 6=Saturday',
-  `start_time`  TIME NOT NULL,
-  `end_time`    TIME NOT NULL,
-  `active`      TINYINT(1) NOT NULL DEFAULT 1,
-  `created_at`  TIMESTAMP NULL,
-  `updated_at`  TIMESTAMP NULL,
-  UNIQUE KEY `uq_day` (`day_of_week`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
--- //02032026
-CREATE TABLE `tbl_branches` (
-  `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `name`       VARCHAR(255) NOT NULL COMMENT 'Tên chi nhánh',
-  `phone`      VARCHAR(20)  NOT NULL COMMENT 'Số điện thoại',
-  `address`    VARCHAR(500) NOT NULL COMMENT 'Địa chỉ',
-  `map_link`   TEXT         NULL     COMMENT 'Link Google Map',
-  `active`     TINYINT(1)   NOT NULL DEFAULT 1,
-  `created_at` TIMESTAMP    NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP    NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+-- SQL script to ensure all required columns exist in the tbl_home table.
+-- Copy and run this script in your database manager (MariaDB/MySQL).
+
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `is_new_address` tinyint(4) DEFAULT 0 AFTER `ward_id`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `detail` text DEFAULT NULL AFTER `description`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `move_in_time` varchar(255) DEFAULT NULL AFTER `updated_at`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `electricity_price` varchar(255) DEFAULT NULL AFTER `move_in_time`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `water_price` varchar(255) DEFAULT NULL AFTER `electricity_price`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `internet_price` varchar(255) DEFAULT NULL AFTER `water_price`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `floors` int(11) DEFAULT NULL AFTER `internet_price`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `entrance` double DEFAULT NULL AFTER `media_captions`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `facade` double DEFAULT NULL AFTER `entrance`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `loanability` double NOT NULL DEFAULT 0 AFTER `facade`;
+
+-- Additional columns from the new form
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `email_phone` varchar(255) DEFAULT NULL AFTER `contact_phone`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `commission_rate` double DEFAULT NULL AFTER `email_phone`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `start_date` date DEFAULT NULL AFTER `customer_id`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `end_date` date DEFAULT NULL AFTER `start_date`;
+ALTER TABLE `tbl_home` ADD COLUMN IF NOT EXISTS `is_featured` tinyint(4) DEFAULT 0 AFTER `status`;
+
+-- Create tbl_plannings table
+CREATE TABLE IF NOT EXISTS `tbl_plannings` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `province_id` int(10) unsigned NOT NULL,
+  `area` double NOT NULL,
+  `kml_file` varchar(255) DEFAULT NULL,
+  `active` tinyint(4) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
--- //02032026 - Booking
-CREATE TABLE `tbl_spa_bookings` (
-  `id`             INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `booking_code`   VARCHAR(30)  NOT NULL COMMENT 'Mã lịch hẹn, vd: BK-20260302-000001',
-  `customer_name`  VARCHAR(255) NOT NULL COMMENT 'Tên khách hàng',
-  `customer_phone` VARCHAR(20)  NOT NULL COMMENT 'Số điện thoại',
-  `booking_date`   DATE         NOT NULL COMMENT 'Ngày hẹn',
-  `booking_time`   TIME         NOT NULL COMMENT 'Giờ hẹn',
-  `branch_id`      INT(11)      NOT NULL COMMENT 'FK → tbl_branches.id',
-  `total_amount`   DECIMAL(15,0) NOT NULL DEFAULT 0 COMMENT 'Tổng tiền',
-  `payment_method` INT(11) NOT NULL COMMENT 'transfer=Chuyển khoản, pay_later=Thanh toán sau',
-  `payment_status` ENUM('pending','paid','pay_later') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái thanh toán',
-  `status`         ENUM('pending','confirmed','completed','cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái lịch hẹn',
-  `note`           TEXT NULL COMMENT 'Ghi chú',
-  `created_at`     TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`     TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_booking_code` (`booking_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `tbl_spa_booking_services` (
-  `id`         INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_booking` INT(11) UNSIGNED NOT NULL COMMENT 'FK → tbl_spa_bookings.id',
-  `id_service` INT(11) UNSIGNED NOT NULL COMMENT 'FK → tbl_services.id',
-  `name`       VARCHAR(255) NOT NULL COMMENT 'Tên dịch vụ (snapshot)',
-  `price`      DECIMAL(15,0) NOT NULL DEFAULT 0 COMMENT 'Đơn giá tại thời điểm đặt',
-  `quantity`   INT(11) NOT NULL DEFAULT 1,
-  `amount`     DECIMAL(15,0) NOT NULL DEFAULT 0 COMMENT 'Thành tiền (price * quantity)',
-  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_id_booking` (`id_booking`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-ALTER TABLE `tbl_spa_bookings` ADD `id_client` INT(11) NULL AFTER `updated_at`;
-
-CREATE TABLE `tbl_spa_payments` (
-  `id`             INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_booking`     INT(11) UNSIGNED NOT NULL,
-  `payment_code`   VARCHAR(30)  NOT NULL,
-  `amount`         DECIMAL(15,0) NOT NULL DEFAULT 0,
-  `payment_method` INT(11) NOT NULL,
-  `note`           TEXT NULL,
-  `status`         ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
-  `approved_by`    INT(11) NULL,
-  `approved_at`    TIMESTAMP NULL,
-  `created_at`     TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`     TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_payment_code` (`payment_code`),
-  KEY `idx_id_booking` (`id_booking`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-ALTER TABLE `tbl_services` CHANGE `price` `price` DOUBLE NOT NULL DEFAULT '0.00', CHANGE `discount_percent` `discount_percent` DOUBLE NOT NULL DEFAULT '0';
-ALTER TABLE `tbl_spa_booking_services` ADD `discount_percent` DOUBLE NULL DEFAULT '0' AFTER `updated_at`, ADD `duration_minutes` DOUBLE NULL DEFAULT '0' AFTER `discount_percent`;
-ALTER TABLE `tbl_spa_payments` ADD `id_client` INT(11) NULL AFTER `updated_at`;
-
--- //13032026
-ALTER TABLE `tbl_spa_bookings` ADD `note_cancel` TEXT NULL AFTER `branch_id`;
-thêm tbl_history_search_service
-tbl_history_search_service_view
--- //16032026
-ALTER TABLE `tbl_services` ADD `is_hot` TINYINT(1) NOT NULL DEFAULT 0 AFTER `active`;
--- //1803026
-ALTER TABLE `tbl_spa_payments` CHANGE `amount` `amount` DOUBLE NOT NULL DEFAULT '0';
-ALTER TABLE `tbl_spa_payments` ADD `amount_payment` DOUBLE NOT NULL DEFAULT '0' AFTER `id_client`;
--- //19032026
--- thêm tbl_posts
--- thêm tbl_posts_toppic
-thêm tbl_post_ignores account chỉnh
-tbl_post_stars
-tbl_receipts
-tbl_post_watchers
-tbl_post_saved 
-tbl_comments
-tbl_user_action_logs
-tbl_post_media
-tbl_post_reads
-tbl_post_tags
--- //20032026
-tbl_reportviolation
-
--- // thêm 23032026
-tbl_hidePost
--- //06042026
-INSERT INTO `tbl_options` (`id`, `name`, `value`, `autoload`) VALUES (NULL, 'admin_email_orders', '', '1'), (NULL, 'cc_admin_email_orders', '', '1');
--- thêm tbl_email_template,tbl_cron_email
--- admin nha
--- 1. Thêm cột 'is_receive_email_spa' (nhận email booking spa) vào bảng danh sách User
-ALTER TABLE `tbl_users` ADD COLUMN `is_receive_email_spa` TINYINT(1) DEFAULT 0 AFTER `email`;
--- 2. Tạo bảng quan hệ (pivot) 'tbl_user_branch' để đối chiếu 1 User nhận thông báo cho những chi nhánh nào
-CREATE TABLE `tbl_user_branch` (
-  `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` BIGINT(20) UNSIGNED NOT NULL,
-  `branch_id` BIGINT(20) UNSIGNED NOT NULL,
-  `created_at` TIMESTAMP NULL DEFAULT NULL,
-  `updated_at` TIMESTAMP NULL DEFAULT NULL,
+-- Create tbl_application_comments table for application comments
+CREATE TABLE IF NOT EXISTS `tbl_application_comments` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `comment_date` datetime NOT NULL,
+  `ticket_number` varchar(50) DEFAULT NULL,
+  `member_id` bigint(20) unsigned DEFAULT NULL,
+  `member_name` varchar(255) DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `rating` tinyint(4) DEFAULT NULL,
+  `images` text DEFAULT NULL,
+  `suggestion_ids` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-INSERT INTO `tbl_group_permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'Lịch hẹn spa', 'booking', NULL, NULL, NULL);
-INSERT INTO `tbl_group_permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'Thanh toán lịch hẹn spa', 'payment_spa', NULL, NULL, NULL);
-ALTER TABLE `tbl_users` CHANGE `lang` `lang` VARCHAR(5) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'vi';
 
--- //07042026 - Mua liệu trình spa
--- Bảng đầu phiếu mua liệu trình
-CREATE TABLE `tbl_treatment_purchases` (
-  `id`              INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `purchase_code`   VARCHAR(30)       NULL     COMMENT 'Mã liệu trình, vd: LT-20260407-00001',
-  `treatment_name`  VARCHAR(255)      NOT NULL COMMENT 'Tên liệu trình (vd: Gói 10 buổi trị mụn)',
-  `id_category`     INT(11) UNSIGNED  NOT NULL COMMENT 'FK → tbl_category_services.id (Lĩnh vực danh mục)',
-  `customer_name`   VARCHAR(255)      NOT NULL COMMENT 'Tên khách hàng / thành viên',
-  `customer_phone`  VARCHAR(20)       NULL     COMMENT 'Số điện thoại',
-  `id_client`       INT(11)           NULL     COMMENT 'FK tùy chọn → id thành viên trên app',
-  `id_branch`       INT(11) UNSIGNED  NOT NULL COMMENT 'FK → tbl_branches.id (chi nhánh áp dụng)',
-  `total_sessions`  INT(11)           NOT NULL DEFAULT 1  COMMENT 'Tổng số buổi mua',
-  `used_sessions`   INT(11)           NOT NULL DEFAULT 0  COMMENT 'Số buổi đã sử dụng',
-  `price`           DOUBLE            NOT NULL DEFAULT 0  COMMENT 'Giá trị liệu trình',
-  `status`          ENUM('active','completed','cancelled') NOT NULL DEFAULT 'active' COMMENT 'active=Đang dùng, completed=Hết buổi, cancelled=Huỷ',
-  `note`            TEXT              NULL,
-  `created_at`      TIMESTAMP         NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`      TIMESTAMP         NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+-- Create tbl_search_suggestions table for caching search suggestion autocompletes
+CREATE TABLE IF NOT EXISTS `tbl_search_suggestions` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `suggestion` varchar(255) NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `to_price` int(11) DEFAULT NULL,
+  `ward_id` int(11) NOT NULL,
+  `is_new_address` tinyint(4) NOT NULL DEFAULT 1,
+  `listing_count` int(11) NOT NULL DEFAULT 0,
+  `score` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_purchase_code` (`purchase_code`),
-  KEY `idx_id_category` (`id_category`),
-  KEY `idx_id_branch` (`id_branch`)
+  KEY `idx_suggestion` (`suggestion`),
+  KEY `idx_ward` (`ward_id`, `is_new_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Bảng log từng buổi sử dụng
-CREATE TABLE `tbl_treatment_sessions` (
-  `id`                  INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_purchase`         INT(11) UNSIGNED NOT NULL COMMENT 'FK → tbl_treatment_purchases.id',
-  `id_booking`          INT(11) UNSIGNED NULL     COMMENT 'FK → tbl_spa_bookings.id (lịch hẹn được áp dụng)',
-  `id_booking_service`  INT(11) UNSIGNED NULL     COMMENT 'FK → tbl_spa_booking_services.id (mặt hàng được áp dụng)',
-  `note`                TEXT             NULL     COMMENT 'Ghi chú buổi sử dụng',
-  `created_by`          INT(11)          NULL     COMMENT 'Admin ghi nhận',
-  `created_at`          TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`          TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_id_purchase` (`id_purchase`),
-  KEY `idx_id_booking`  (`id_booking`)
+
+
+
+-- Create tbl_plandoffices table
+CREATE TABLE IF NOT EXISTS `tbl_plandoffices` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `province_id` int(10) unsigned NOT NULL,
+  `area` double NOT NULL,
+  `kml_file` varchar(255) DEFAULT NULL,
+  `active` tinyint(4) NOT NULL DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Thêm cột ghi nhận liệu trình đã áp dụng vào từng mặt hàng booking
-ALTER TABLE `tbl_spa_booking_services` ADD `id_treatment_purchase` INT(11) NULL DEFAULT NULL COMMENT 'FK → tbl_treatment_purchases.id (liệu trình được dùng cho mặt hàng này)' AFTER `duration_minutes`;
+-- Insert group permission for plandoffices
+INSERT INTO `tbl_group_permissions` (`name`, `display_name`, `description`, `created_at`, `updated_at`) 
+VALUES ('plandoffices', 'Quản lý quy hoạch văn phòng', 'Quản lý danh sách, bản đồ quy hoạch văn phòng', NOW(), NOW());
 
--- Thêm quyền cho nhóm buy_treatment
-INSERT INTO `tbl_group_permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'Mua liệu trình', 'buy_treatment', NULL, NULL, NULL);
-ALTER TABLE `tbl_spa_booking_services` 
-ADD `id_treatment_purchase` INT(11) NULL DEFAULT NULL 
-COMMENT 'FK → tbl_treatment_purchases.id (liệu trình được dùng cho mặt hàng này)' 
-AFTER `duration_minutes`;
--- //08042026 - Quản lý nhập kho
-CREATE TABLE `tbl_warehouse_imports` (
-  `id`              INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `import_code`     VARCHAR(30)       NULL     COMMENT 'Mã phiếu nhập, vd: NK-20260408-00001',
-  `import_date`     DATE              NOT NULL COMMENT 'Ngày nhập kho',
-  `supplier_name`   VARCHAR(255)      NOT NULL COMMENT 'Tên nhà cung cấp',
-  `note`            TEXT              NULL     COMMENT 'Ghi chú',
-  `status`          TINYINT(1)        NOT NULL DEFAULT 0 COMMENT '0=Chờ duyệt, 1=Đã duyệt, 2=Đã hủy',
-  `created_by`      INT(11)           NULL     COMMENT 'Admin tạo phiếu',
-  `approved_by`     INT(11)           NULL     COMMENT 'Admin duyệt phiếu',
-  `created_at`      TIMESTAMP         NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`      TIMESTAMP         NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+-- Get the last inserted id for group permission and insert its permissions
+SET @group_id = LAST_INSERT_ID();
+
+INSERT INTO `tbl_permissions` (`name`, `display_name`, `description`, `group_permission_id`, `created_at`, `updated_at`) VALUES
+('view', 'Xem quy hoạch văn phòng', 'Xem danh sách và bản đồ quy hoạch văn phòng', @group_id, NOW(), NOW()),
+('add', 'Thêm quy hoạch văn phòng', 'Thêm quy hoạch văn phòng mới', @group_id, NOW(), NOW()),
+('edit', 'Sửa quy hoạch văn phòng', 'Sửa thông tin quy hoạch văn phòng', @group_id, NOW(), NOW()),
+('delete', 'Xóa quy hoạch văn phòng', 'Xóa quy hoạch văn phòng', @group_id, NOW(), NOW());
+
+-- Allocate the new permissions to admin roles (role_id = 1 and role_id = 2)
+INSERT INTO `tbl_permission_role` (`permission_id`, `role_id`, `group_permission_id`)
+SELECT p.id, r.id, g.id
+FROM `tbl_permissions` p
+JOIN `tbl_group_permissions` g ON g.id = p.group_permission_id
+CROSS JOIN `tbl_roles` r
+WHERE g.name = 'plandoffices' AND r.id IN (1, 2);
+
+-- Allocate the new permissions to user_id = 3 (if applicable)
+INSERT INTO `tbl_user_permission` (`permission_id`, `user_id`, `group_permission_id`)
+SELECT p.id, 3, g.id
+FROM `tbl_permissions` p
+JOIN `tbl_group_permissions` g ON g.id = p.group_permission_id
+WHERE g.name = 'plandoffices';
+
+-- Create tbl_history_search_home table for storing home search suggestions/keywords history
+CREATE TABLE IF NOT EXISTS `tbl_history_search_home` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `id_client` bigint(20) unsigned NOT NULL,
+  `search` varchar(255) DEFAULT NULL,
+  `id_suggestions` bigint(20) unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_import_code` (`import_code`)
+  KEY `idx_client_search` (`id_client`, `search`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `tbl_warehouse_import_details` (
-  `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_import`     INT(11) UNSIGNED NOT NULL COMMENT 'FK → tbl_warehouse_imports.id',
-  `id_product`    INT(11) UNSIGNED NOT NULL COMMENT 'FK → tbl_products.id',
-  `product_code`  VARCHAR(100)     NULL     COMMENT 'Cache mã SP',
-  `product_name`  VARCHAR(255)     NULL     COMMENT 'Cache tên SP',
-  `quantity`      INT(11)          NOT NULL DEFAULT 0 COMMENT 'Số lượng nhập ban đầu',
-  `remaining_qty` INT(11)          NOT NULL DEFAULT 0 COMMENT 'Số lượng còn lại trong lô này',
-  `created_at`    TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`    TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+-- Create tbl_plandoffice_parcels table for storing land registry plot records extracted from KML
+CREATE TABLE IF NOT EXISTS `tbl_plandoffice_parcels` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `plandoffice_id` bigint(20) unsigned DEFAULT NULL,
+  `so_to` varchar(50) DEFAULT NULL,
+  `so_thua` varchar(50) DEFAULT NULL,
+  `dien_tich` double DEFAULT NULL,
+  `cong_trinh` varchar(100) DEFAULT NULL,
+  `loai_dat` varchar(100) DEFAULT NULL,
+  `ten_chu` varchar(255) DEFAULT NULL,
+  `loai_dat_quy_hoach` text DEFAULT NULL,
+  `mo_ta_thua` text DEFAULT NULL,
+  `lat` double DEFAULT NULL,
+  `lng` double DEFAULT NULL,
+  `coords` longtext DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `idx_id_import`  (`id_import`),
-  KEY `idx_id_product` (`id_product`)
+  KEY `idx_plandoffice_id` (`plandoffice_id`),
+  KEY `idx_to_thua` (`so_to`, `so_thua`),
+  KEY `idx_lat_lng` (`lat`, `lng`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `tbl_warehouse_stock` (
-  `id`          INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_product`  INT(11) UNSIGNED NOT NULL COMMENT 'FK → tbl_products.id',
-  `quantity`    INT(11)          NOT NULL DEFAULT 0 COMMENT 'Số lượng tồn kho hiện tại (tổng)',
-  `last_import` DATE              NULL    COMMENT 'Ngày nhập gần nhất',
-  `created_at`  TIMESTAMP        NULL    DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`  TIMESTAMP        NULL    DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_id_product` (`id_product`)
+
+//
+INSERT INTO `tbl_options` (`id`, `name`, `value`, `autoload`) VALUES (NULL, 'link_support', '', '1'), (NULL, 'link_tvlh', '', '1');
+
+-- Create tbl_application_comment table for application comment templates
+CREATE TABLE IF NOT EXISTS `tbl_application_comment` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `content` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `tbl_group_permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'Nhập kho', 'warehouse_import', NULL, NULL, NULL);
-INSERT INTO `tbl_group_permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'Quản lý tồn kho', 'warehouse_stock', NULL, NULL, NULL);
+-- Group permission and permissions for application_comments settings
+INSERT INTO `tbl_group_permissions` (`name`, `display_name`, `description`, `created_at`, `updated_at`) 
+VALUES ('application_comments', 'Quản lý góp ý ứng dụng', 'Xem và quản lý các ý kiến đóng góp từ người dùng trên ứng dụng', NOW(), NOW());
 
--- ALTER TABLE `tbl_warehouse_import_details`
---   ADD COLUMN `product_code` VARCHAR(100) NULL AFTER `id_product`,
---   ADD COLUMN `product_name` VARCHAR(255) NULL AFTER `product_code`,
---   ADD COLUMN `remaining_qty` INT(11) NOT NULL DEFAULT 0 AFTER `quantity`;
--- UPDATE `tbl_warehouse_import_details` SET `remaining_qty` = `quantity` WHERE `remaining_qty` = 0;
+-- Get the last inserted id for group permission and insert its permissions
+SET @group_id = LAST_INSERT_ID();
 
-ALTER TABLE tbl_branches ADD COLUMN icon VARCHAR(255) NULL;
+INSERT INTO `tbl_permissions` (`name`, `display_name`, `description`, `group_permission_id`, `created_at`, `updated_at`) VALUES
+('view', 'Xem góp ý ứng dụng', 'Xem danh sách các góp ý từ ứng dụng', @group_id, NOW(), NOW()),
+('delete', 'Xóa góp ý ứng dụng', 'Xóa các góp ý ứng dụng', @group_id, NOW(), NOW());
 
--- //08042026 - Duyệt kho cho đơn hàng (bảng local trong DB admin, vì tbl_transaction nằm ở service khác)
-CREATE TABLE IF NOT EXISTS `tbl_transaction_warehouse` (
-  `id`                  INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `transaction_id`      INT(11)          NOT NULL COMMENT 'ID đơn hàng từ service account',
-  `warehouse_status`    TINYINT(1)       NOT NULL DEFAULT 0 COMMENT '0=Chưa duyệt, 1=Đã duyệt kho',
-  `warehouse_approved_at` TIMESTAMP      NULL     COMMENT 'Thời gian duyệt kho',
-  `warehouse_approved_by` INT(11)        NULL     COMMENT 'Admin duyệt kho',
-  `created_at`          TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`          TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+-- Allocate the new permissions to admin roles (role_id = 1 and role_id = 2)
+INSERT INTO `tbl_permission_role` (`permission_id`, `role_id`, `group_permission_id`)
+SELECT p.id, r.id, g.id
+FROM `tbl_permissions` p
+JOIN `tbl_group_permissions` g ON g.id = p.group_permission_id
+CROSS JOIN `tbl_roles` r
+WHERE g.name = 'application_comments' AND r.id IN (1, 2);
+
+-- Allocate the new permissions to user_id = 3 (if applicable)
+INSERT INTO `tbl_user_permission` (`permission_id`, `user_id`, `group_permission_id`)
+SELECT p.id, 3, g.id
+FROM `tbl_permissions` p
+JOIN `tbl_group_permissions` g ON g.id = p.group_permission_id
+WHERE g.name = 'application_comments';
+
+-- Add suggestion_ids to tbl_application_comments for storing selected templates array
+ALTER TABLE `tbl_application_comments` ADD COLUMN `suggestion_ids` varchar(255) DEFAULT NULL AFTER `images`;
+
+-- Insert options for contacts
+INSERT INTO `tbl_options` (`name`, `value`, `autoload`) VALUES ('link_youtube', '', '1') ON DUPLICATE KEY UPDATE `name` = `name`;
+INSERT INTO `tbl_options` (`name`, `value`, `autoload`) VALUES ('working_hours', '', '1') ON DUPLICATE KEY UPDATE `name` = `name`;
+INSERT INTO `tbl_options` (`name`, `value`, `autoload`) VALUES ('contact_address', '', '1') ON DUPLICATE KEY UPDATE `name` = `name`;
+
+-- Add lat, lng, coords columns to tbl_plandoffice_parcels for rendering map from database instead of KML
+ALTER TABLE `tbl_plandoffice_parcels` ADD COLUMN IF NOT EXISTS `lat` double DEFAULT NULL AFTER `ten_chu`;
+ALTER TABLE `tbl_plandoffice_parcels` ADD COLUMN IF NOT EXISTS `lng` double DEFAULT NULL AFTER `lat`;
+ALTER TABLE `tbl_plandoffice_parcels` ADD COLUMN IF NOT EXISTS `coords` longtext DEFAULT NULL AFTER `lng`;
+ALTER TABLE `tbl_plandoffice_parcels` ADD KEY IF NOT EXISTS `idx_lat_lng` (`lat`, `lng`);
+ALTER TABLE `tbl_blog` ADD `staff_create` INT(11) NULL AFTER `updated_at`;
+ALTER TABLE `tbl_blog` ADD `view` DOUBLE NOT NULL DEFAULT '0' AFTER `staff_create`;
+
+
+
+-- 11062026 - Bổ sung các trường còn thiếu cho bảng quy hoạch (tbl_plannings)
+-- Các trường tương ứng với màn hình app: Số quyết định, Quy mô, Trạng thái, Ngày phê duyệt, Loại quy hoạch, Ảnh, Mô tả, Khu vực chi tiết
+ALTER TABLE `tbl_plannings` ADD COLUMN `location_text` VARCHAR(255) DEFAULT NULL COMMENT 'Khu vực chi tiết hiển thị (VD: Bình Thạnh, TP. HCM)' AFTER `province_id`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `decision_no` VARCHAR(255) DEFAULT NULL COMMENT 'Số quyết định (VD: QĐ số 4295/QĐ-UBND)' AFTER `location_text`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `scale` DOUBLE DEFAULT NULL COMMENT 'Quy mô tính bằng ha (hecta) - hiển thị trên app' AFTER `area`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `status` VARCHAR(50) NOT NULL DEFAULT 'approved' COMMENT 'Trạng thái: approved=Đã phê duyệt, effective=Hiệu lực, draft=Dự thảo, expired=Hết hiệu lực' AFTER `scale`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `approved_date` DATE DEFAULT NULL COMMENT 'Ngày phê duyệt' AFTER `status`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `planning_type` VARCHAR(50) NOT NULL DEFAULT 'published' COMMENT 'Loại: published=Đang công bố, draft_feedback=Dự thảo góp ý' AFTER `approved_date`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `image` VARCHAR(255) DEFAULT NULL COMMENT 'Ảnh đại diện quy hoạch' AFTER `planning_type`;
+ALTER TABLE `tbl_plannings` ADD COLUMN `description` TEXT DEFAULT NULL COMMENT 'Mô tả quy hoạch' AFTER `image`;
+
+-- 12062026 - Tạo bảng lưu lịch sử xem bất động sản của user client
+-- Bảng này lưu mỗi lượt xem riêng biệt (không aggregate), giúp thống kê chính xác
+CREATE TABLE IF NOT EXISTS `tbl_home_views` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `home_id` bigint(20) unsigned NOT NULL COMMENT 'ID bất động sản được xem',
+  `id_client` bigint(20) unsigned NOT NULL COMMENT 'ID user client đã xem',
+  `source` varchar(50) DEFAULT 'app' COMMENT 'Nguồn xem: app, web, share_link',
+  `viewed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm xem',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_transaction_id` (`transaction_id`)
+  KEY `idx_home_id` (`home_id`),
+  KEY `idx_client` (`id_client`),
+  KEY `idx_home_client` (`home_id`, `id_client`),
+  KEY `idx_viewed_at` (`viewed_at`),
+  KEY `idx_home_viewed` (`home_id`, `viewed_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `tbl_transaction_warehouse_details` (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `transaction_id` INT(11) NOT NULL COMMENT 'ID đơn hàng',
-  `id_product` INT(11) NOT NULL,
-  `detail_id` INT(11) NOT NULL COMMENT 'Lô nhập kho: tbl_warehouse_import_details.id',
-  `qty_take` INT(11) NOT NULL COMMENT 'Số lượng đã trừ từ lô này',
-  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY (`transaction_id`),
-  KEY (`detail_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-them warehouse_status vào tbl_transaction
-
--- //15042026
-INSERT INTO `tbl_options` (`id`, `name`, `value`, `autoload`) VALUES (NULL, 'link_apple', '', '1'), (NULL, 'link_android', '', '1');
-
--- //16042026 - Quản lý mã Leader (bên DB accounts)
-CREATE TABLE IF NOT EXISTS `tbl_code_leader` (
-  `id`            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `code`          VARCHAR(50)      NOT NULL COMMENT 'Mã leader (VD: LD-00001)',
-  `status`        TINYINT(1)       NOT NULL DEFAULT 0 COMMENT '0=Chưa sử dụng, 1=Đã sử dụng',
-  `customer_id`   INT(11)          NULL     COMMENT 'FK → tbl_clients.id (khách hàng được gán)',
-  `note`          TEXT             NULL     COMMENT 'Ghi chú',
-  `used_at`       TIMESTAMP        NULL     COMMENT 'Ngày sử dụng / gán khách hàng',
-  `created_at`    TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP,
-  `updated_at`    TIMESTAMP        NULL     DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_code` (`code`),
-  KEY `idx_customer_id` (`customer_id`),
-  KEY `idx_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Thêm quyền cho module code_leader (bên DB admin)
-INSERT INTO `tbl_group_permissions` (`id`, `name`, `display_name`, `description`, `created_at`, `updated_at`) VALUES (NULL, 'Quản lý mã Leader', 'code_leader', NULL, NULL, NULL);
--- //16042026 new
-ALTER TABLE `tbl_users` ADD `code_introduce` VARCHAR(10) NULL DEFAULT NULL AFTER `lang`;
-ALTER TABLE `tbl_clients` ADD `code_introduce_admin` VARCHAR(10) NULL AFTER `type_leader`;
-
--- //23042026
-ALTER TABLE `tbl_spa_booking_services` ADD `booking_date` DATE NULL COMMENT 'Ngày hẹn' AFTER `id_treatment_purchase`, ADD `booking_time` TIME NULL COMMENT 'Giờ hẹn' AFTER `booking_date`;

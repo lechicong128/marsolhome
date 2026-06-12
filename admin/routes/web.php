@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminWebsiteController;
+use App\Http\Controllers\BotSearchController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryProductsController;
 use App\Http\Controllers\ChallengeController;
@@ -10,7 +13,8 @@ use App\Http\Controllers\ChallengeMeController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ClientsReviewController;
-use App\Http\Controllers\ContentReviewController;
+use App\Http\Controllers\ContentCommentController;
+use App\Http\Controllers\ContentReportCommentController;
 use App\Http\Controllers\CronController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EventArticlesController;
@@ -40,6 +44,9 @@ use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariantController;
+use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\PlandofficeController;
+use App\Http\Controllers\ApplicationCommentsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransactionPaymentController;
 use App\Http\Controllers\CategoryServiceController;
@@ -54,11 +61,20 @@ use App\Http\Controllers\VideoFileController;
 use App\Http\Controllers\BonusPaymentController;
 use App\Http\Controllers\BuyTreatmentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ImportComtroller;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\CodeLeaderController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\ManageHomeController;
+use App\Http\Controllers\TypePropertyController;
+use App\Http\Controllers\LegalDocumentController;
+use App\Http\Controllers\HouseOrientationController;
+use App\Http\Controllers\InteriorHandoverController;
+use App\Http\Controllers\InteriorAmenityController;
+use App\Http\Controllers\UtilitiesController;
+use App\Http\Controllers\FeaturedLocationAdminController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -111,6 +127,7 @@ Route::group(['prefix' => 'cron'], function () {
     Route::get('render_thumbnail_file', [CronController::class, 'render_thumbnail_file']);
     Route::get('refresh_token_zalo', [CronController::class, 'refresh_token_zalo']);
     Route::get('cronjob_send_mail', [CronController::class, 'cronjob_send_mail']);
+    Route::get('scanSuggestions', [BotSearchController::class, 'scanSuggestions']);
 });
 
 
@@ -479,6 +496,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::get('searchRequestWithdrawMoney/{id?}', [CategoryController::class, 'searchRequestWithdrawMoney']);
         Route::get('searchBlog/{id?}', [CategoryController::class, 'searchBlog']);
         Route::get('searchCategoryCard/{id?}', [CategoryController::class, 'searchCategoryCard']);
+        Route::get('searchPropertyType/{id?}', [CategoryController::class, 'searchPropertyType']);
     });
 
 
@@ -501,6 +519,22 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
 //    });
 
 
+
+    Route::group(['prefix' => 'content_comment'], function () {
+        Route::post('getContentComment', [ContentCommentController::class, 'getContentComment']);
+        Route::get('detail/{id?}', [ContentCommentController::class, 'get_detail']);
+        Route::post('submit/{id}', [ContentCommentController::class, 'submit']);
+        Route::get('delete/{id}', [ContentCommentController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => 'content_report_comment'], function () {
+        Route::post('getContentReportComment', [ContentReportCommentController::class, 'getContentReportComment']);
+        Route::get('detail/{id?}', [ContentReportCommentController::class, 'get_detail']);
+        Route::post('submit/{id}', [ContentReportCommentController::class, 'submit']);
+        Route::get('delete/{id}', [ContentReportCommentController::class, 'delete']);
+    });
+
+
     Route::group(['prefix' => 'content_review'], function () {
         Route::post('getContentReview', [ContentReviewController::class, 'getContentReview']);
         Route::get('detail/{id?}', [ContentReviewController::class, 'get_detail']);
@@ -508,16 +542,25 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::get('delete/{id}', [ContentReviewController::class, 'delete']);
     });
 
-//    Route::group(['prefix' => 'blog'], function () {
-//        Route::get('list', [BlogController::class, 'get_list']);
-//        Route::post('getBlog', [BlogController::class, 'getBlog']);
-//        Route::get('detail/{id?}', [BlogController::class, 'get_detail']);
-//        Route::post('submit/{id}', [BlogController::class, 'submit']);
-//        Route::get('delete/{id}', [BlogController::class, 'delete']);
-//        Route::get('changeStatus/{id}', [BlogController::class, 'changeStatus']);
-//        Route::get('changeHomePage/{id}', [BlogController::class, 'changeHomePage']);
-//        Route::get('changeHot/{id}', [BlogController::class, 'changeHot']);
-//    });
+    Route::group(['prefix' => 'blog'], function () {
+        Route::get('list', [BlogController::class, 'get_list']);
+        Route::post('getBlog', [BlogController::class, 'getBlog']);
+        Route::get('detail/{id?}', [BlogController::class, 'get_detail']);
+        Route::post('submit/{id}', [BlogController::class, 'submit']);
+        Route::get('delete/{id}', [BlogController::class, 'delete']);
+        Route::get('changeStatus/{id}', [BlogController::class, 'changeStatus']);
+        Route::get('changeHomePage/{id}', [BlogController::class, 'changeHomePage']);
+        Route::get('changeHot/{id}', [BlogController::class, 'changeHot']);
+    });
+
+    Route::group(['prefix' => 'blog_category'], function () {
+        Route::get('list', [BlogCategoryController::class, 'get_list']);
+        Route::post('getTable', [BlogCategoryController::class, 'getTable']);
+        Route::get('detail/{id?}', [BlogCategoryController::class, 'get_detail']);
+        Route::post('submit/{id}', [BlogCategoryController::class, 'submit']);
+        Route::get('delete/{id}', [BlogCategoryController::class, 'delete']);
+        Route::get('changeStatus/{id}', [BlogCategoryController::class, 'changeStatus']);
+    });
 
 //    Route::group(['prefix' => 'blog_recruitment'], function () {
 //        Route::get('list', [BlogRecruitmentController::class, 'get_list']);
@@ -549,6 +592,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::post('submit/{id}', [BannerController::class, 'submit']);
         Route::get('delete/{id}', [BannerController::class, 'delete']);
         Route::get('changeStatus/{id}', [BannerController::class, 'changeStatus']);
+        Route::post('order_by', [BannerController::class, 'order_by']);
     });
 
     Route::group(['prefix' => 'module_noti'], function () {
@@ -771,6 +815,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::get('list', [ClientsController::class, 'get_list']);
         Route::get('detail/{id?}', [ClientsController::class, 'get_detail']);
         Route::get('view/{id}', [ClientsController::class, 'view']);
+        Route::get('ajaxSearch', [ClientsController::class, 'ajaxSearch']);
         Route::post('getListCustomer', [ClientsController::class, 'getListCustomer']);
         Route::post('countAll', [ClientsController::class, 'countAll']);
         Route::get('getDetailCustomer', [ClientsController::class, 'getDetailCustomer']);
@@ -804,6 +849,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::post('getTable', [FeedbackController::class, 'getTable']);
         Route::post('countAll', [FeedbackController::class, 'countAll']);
         Route::get('delete/{id?}', [FeedbackController::class, 'delete']);
+    });
+
+    Route::group(['prefix' => 'application_comments'], function () {
+        Route::get('list', [ApplicationCommentsController::class, 'get_list']);
+        Route::post('getTable', [ApplicationCommentsController::class, 'getTable']);
+        Route::post('getTabletem', [ApplicationCommentsController::class, 'getTabletem']);
+        Route::get('detail/{id?}', [ApplicationCommentsController::class, 'get_detail']);
+        Route::post('submit/{id?}', [ApplicationCommentsController::class, 'submit']);
+        Route::get('delete/{id}', [ApplicationCommentsController::class, 'delete']);
     });
 
 
@@ -1020,6 +1074,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::post('getModalBookingDetail', [ReportController::class, 'getModalBookingDetail']);
         Route::get('report_booking_detail', [ReportController::class, 'report_booking_detail']);
         Route::post('getListReportBookingDetail', [ReportController::class, 'getListReportBookingDetail']);
+        Route::get('real_estate_data', [ReportsController::class, 'realEstateData']);
+        Route::post('getListRealEstateData', [ReportsController::class, 'getListRealEstateData']);
     });
 
     
@@ -1046,4 +1102,118 @@ Route::group(['prefix' => 'admin', 'middleware' => 'checkLogin:admin'], function
         Route::post('countAll', [CodeLeaderController::class, 'countAll']);
     });
 
+    Route::group(['prefix' => 'manage_home'], function () {
+        Route::get('list', [ManageHomeController::class, 'list']);
+        Route::post('getList', [ManageHomeController::class, 'getList']);
+        Route::get('detail/{id?}', [ManageHomeController::class, 'detail']);
+        Route::post('detail/{id?}', [ManageHomeController::class, 'detail']);
+        Route::get('delete/{id}', [ManageHomeController::class, 'delete']);
+        Route::post('getDistricts', [ManageHomeController::class, 'getDistricts']);
+        Route::post('getWards', [ManageHomeController::class, 'getWards']);
+        Route::get('view/{id}', [ManageHomeController::class, 'view']);
+        Route::post('changeFeatured/{id}', [ManageHomeController::class, 'changeFeatured']);
+        Route::get('changeNew/{id}', [ManageHomeController::class, 'changeNew']);
+        Route::get('changeVip/{id}', [ManageHomeController::class, 'changeVip']);
+        Route::post('changeStatus', [ManageHomeController::class, 'changeStatus']);
+        Route::post('countAll', [ManageHomeController::class, 'countAll']);
+        Route::post('generate_ai', [ManageHomeController::class, 'generate_ai']);
+        Route::get('delete_review/{id}', [ManageHomeController::class, 'delete_review']);
+        Route::post('edit_review/{id}', [ManageHomeController::class, 'edit_review']);
+        Route::get('getSearchSuggestions', [ManageHomeController::class, 'getSearchSuggestions']);
+        Route::get('scanSuggestions', [BotSearchController::class, 'scanSuggestions']);
+    });
+
+    Route::group(['prefix' => 'type_property'], function () {
+        Route::get('list', [TypePropertyController::class, 'get_list']);
+        Route::post('getTypeProperty', [TypePropertyController::class, 'getTypeProperty']);
+        Route::get('detail/{id?}', [TypePropertyController::class, 'get_detail']);
+        Route::post('submit/{id}', [TypePropertyController::class, 'submit']);
+        Route::get('delete/{id}', [TypePropertyController::class, 'delete']);
+        Route::get('changeStatus/{id}', [TypePropertyController::class, 'changeStatus']);
+    });
+
+    Route::group(['prefix' => 'legal_documents'], function () {
+        Route::get('list', [LegalDocumentController::class, 'get_list']);
+        Route::post('getLegalDocuments', [LegalDocumentController::class, 'getLegalDocuments']);
+        Route::get('detail/{id?}', [LegalDocumentController::class, 'get_detail']);
+        Route::post('submit/{id}', [LegalDocumentController::class, 'submit']);
+        Route::get('delete/{id}', [LegalDocumentController::class, 'delete']);
+        Route::get('changeStatus/{id}', [LegalDocumentController::class, 'changeStatus']);
+    });
+
+    Route::group(['prefix' => 'house_orientations'], function () {
+        Route::get('list', [HouseOrientationController::class, 'get_list']);
+        Route::post('getHouseOrientations', [HouseOrientationController::class, 'getHouseOrientations']);
+        Route::get('detail/{id?}', [HouseOrientationController::class, 'get_detail']);
+        Route::post('submit/{id}', [HouseOrientationController::class, 'submit']);
+        Route::get('delete/{id}', [HouseOrientationController::class, 'delete']);
+        Route::get('changeStatus/{id}', [HouseOrientationController::class, 'changeStatus']);
+    });
+
+    Route::group(['prefix' => 'interior_handovers'], function () {
+        Route::get('list', [InteriorHandoverController::class, 'get_list']);
+        Route::post('getInteriorHandovers', [InteriorHandoverController::class, 'getInteriorHandovers']);
+        Route::get('detail/{id?}', [InteriorHandoverController::class, 'get_detail']);
+        Route::post('submit/{id}', [InteriorHandoverController::class, 'submit']);
+        Route::get('delete/{id}', [InteriorHandoverController::class, 'delete']);
+        Route::get('changeStatus/{id}', [InteriorHandoverController::class, 'changeStatus']);
+    });
+
+    Route::group(['prefix' => 'interior_amenities'], function () {
+        Route::get('list', [InteriorAmenityController::class, 'get_list']);
+        Route::post('getInteriorAmenities', [InteriorAmenityController::class, 'getInteriorAmenities']);
+        Route::get('detail/{id?}', [InteriorAmenityController::class, 'get_detail']);
+        Route::post('submit/{id}', [InteriorAmenityController::class, 'submit']);
+        Route::get('delete/{id}', [InteriorAmenityController::class, 'delete']);
+        Route::get('changeStatus/{id}', [InteriorAmenityController::class, 'changeStatus']);
+    });
+
+    Route::group(['prefix' => 'utilities'], function () {
+        Route::get('list', [UtilitiesController::class, 'get_list']);
+        Route::post('getUtilities', [UtilitiesController::class, 'getUtilities']);
+        Route::get('detail/{id?}', [UtilitiesController::class, 'get_detail']);
+        Route::post('submit/{id}', [UtilitiesController::class, 'submit']);
+        Route::get('delete/{id}', [UtilitiesController::class, 'delete']);
+        Route::get('changeStatus/{id}', [UtilitiesController::class, 'changeStatus']);
+        Route::get('changeShowList/{id}', [UtilitiesController::class, 'changeShowList']);
+        Route::get('changeShowFilter/{id}', [UtilitiesController::class, 'changeShowFilter']);
+    });
+
+    Route::group(['prefix' => 'plannings'], function () {
+        Route::get('list', [PlanningController::class, 'get_list']);
+        Route::post('getPlannings', [PlanningController::class, 'getPlannings']);
+        Route::get('detail/{id?}', [PlanningController::class, 'get_detail']);
+        Route::post('submit/{id?}', [PlanningController::class, 'submit']);
+        Route::get('delete/{id}', [PlanningController::class, 'delete']);
+        Route::get('changeStatus/{id}', [PlanningController::class, 'changeStatus']);
+        Route::get('view-map/{id}', [PlanningController::class, 'viewMap']);
+    });
+
+    Route::group(['prefix' => 'plandoffices'], function () {
+        Route::get('list', [PlandofficeController::class, 'get_list']);
+        Route::post('getPlannings', [PlandofficeController::class, 'getPlannings']);
+        Route::get('detail/{id?}', [PlandofficeController::class, 'get_detail']);
+        Route::post('submit/{id?}', [PlandofficeController::class, 'submit']);
+        Route::get('delete/{id}', [PlandofficeController::class, 'delete']);
+        Route::get('changeStatus/{id}', [PlandofficeController::class, 'changeStatus']);
+        Route::get('view-map/{id}', [PlandofficeController::class, 'viewMap']);
+        Route::post('extract-parcels', [PlandofficeController::class, 'extractParcels']);
+        Route::post('delete-kml-file', [PlandofficeController::class, 'deleteKmlFile']);
+        Route::get('parcels/{plandoffice_id}', [PlandofficeController::class, 'parcels']);
+        Route::post('getParcels/{plandoffice_id}', [PlandofficeController::class, 'getParcels']);
+        Route::get('get-parcel-info', [PlandofficeController::class, 'getParcelInfo']);
+        Route::get('get-map-data/{id}', [PlandofficeController::class, 'getMapData']);
+        Route::get('edit-parcel/{id}', [PlandofficeController::class, 'edit_parcel']);
+        Route::post('update-parcel/{id}', [PlandofficeController::class, 'update_parcel']);
+    });
+    
+    Route::group(['prefix' => 'featured_locations'], function () {
+        Route::get('list', [FeaturedLocationAdminController::class, 'get_list']);
+        Route::post('getFeaturedLocations', [FeaturedLocationAdminController::class, 'getFeaturedLocations']);
+        Route::get('detail/{id?}', [FeaturedLocationAdminController::class, 'get_detail']);
+        Route::post('submit/{id}', [FeaturedLocationAdminController::class, 'submit']);
+        Route::get('changeStatus/{id}', [FeaturedLocationAdminController::class, 'changeStatus']);
+        Route::post('order_by', [FeaturedLocationAdminController::class, 'order_by']);
+    });
 });
+

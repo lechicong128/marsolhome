@@ -9,6 +9,12 @@ class Province extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_province';
+    protected $table = 'tbl_provinces';
+    protected $primaryKey = 'id';
+
+    public function homes()
+    {
+        return $this->hasMany('App\Models\Home', 'province_id', 'id');
+    }
 
 }

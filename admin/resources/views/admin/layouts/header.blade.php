@@ -1,5 +1,14 @@
+<style>
+    .modal-overlay {
+        top: 0 !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+</style>
 <div class="header-left">
-    <button class="header-toggle" id="sidebarToggle">
+    <button type="button" class="header-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
         <i class="fa fa-bars"></i>
     </button>
     <div class="header-breadcrumb">
